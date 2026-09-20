@@ -1,0 +1,1565 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>СОБОЛЬ — студия наращивания ресниц</title>
+<meta name="description" content="Наращивание ресниц по одной: классика, мокрый эффект, 1,5D, 2D и 3D. Два клиента в день, изоляция каждой ресницы, снятие бесплатно при записи. Запись в Telegram, WhatsApp и VK.">
+<meta name="theme-color" content="#F3ECE3">
+<!-- Демо-версия: снимите строку ниже, когда поставите настоящие тексты и контакты. -->
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ru_RU">
+<meta property="og:title" content="СОБОЛЬ — студия наращивания ресниц">
+<meta property="og:description" content="Наращивание по одной ресничке. Два клиента в день, никакой конвейерной работы.">
+<meta property="og:image" content="assets/img/og.webp">
+<link rel="preload" href="assets/fonts/prata-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/golos-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+
+<style>
+/* =========================================================================
+   СОБОЛЬ — lash studio
+   Один файл: разметка, стили и скрипты. Правки текста — прямо в разметке.
+   Порядок слоёв задан явно, чтобы правки в «components» не перебивались
+   базовыми правилами.
+   ========================================================================= */
+@layer font, reset, tokens, base, layout, components, utils;
+
+/* ---------- FONT ---------- */
+@layer font {
+  @font-face{font-family:'Prata';font-style:normal;font-weight:400;font-display:swap;src:url("assets/fonts/prata-cyrillic.woff2") format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+  @font-face{font-family:'Prata';font-style:normal;font-weight:400;font-display:swap;src:url("assets/fonts/prata-latin.woff2") format("woff2");unicode-range:U+0000-00FF,U+2011,U+2013-2014,U+2018-2019,U+201C-201D,U+2026,U+2116,U+20BD,U+2192,U+2248,U+2605,U+2713}
+  @font-face{font-family:'Golos Text';font-style:normal;font-weight:400 600;font-display:swap;src:url("assets/fonts/golos-cyrillic.woff2") format("woff2");unicode-range:U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+  @font-face{font-family:'Golos Text';font-style:normal;font-weight:400 600;font-display:swap;src:url("assets/fonts/golos-latin.woff2") format("woff2");unicode-range:U+0000-00FF,U+2011,U+2013-2014,U+2018-2019,U+201C-201D,U+2026,U+2116,U+20BD,U+2192,U+2248,U+2605,U+2713}
+}
+
+/* ---------- RESET ---------- */
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; }
+  * { margin: 0; }
+  html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+  body { min-height: 100svh; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  img, video, svg { display: block; max-width: 100%; }
+  img, video { height: auto; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  button { background: none; border: 0; padding: 0; cursor: pointer; }
+  a { color: inherit; }
+  ul, ol { list-style: none; padding: 0; }
+  summary::-webkit-details-marker { display: none; }
+  :target { scroll-margin-top: 6rem; }
+  [hidden] { display: none !important; }
+}
+
+/* ---------- TOKENS ----------
+   Палитра снята с материалов студии: льняная салфетка, соболиный ворс
+   волоска и холодный блик стали на пинцете. Сталь — единственный
+   холодный цвет и живёт только в мелких деталях.                        */
+@layer tokens {
+  :root {
+    --paper:   #F3ECE3;
+    --paper-2: #EDE3D6;
+    --linen:   #E4D7C4;
+    --sand:    #D6C3A9;
+    --ink:     #1C1714;
+    --ink-2:   #453A32;
+    --ink-3:   #6A5C51;
+    --steel:   #6E7F84;   /* графика: своя ресница на схемах */
+    --steel-ink: #4E5A5E;
+    --line:    rgba(28, 23, 20, .16);
+    --line-2:  rgba(28, 23, 20, .08);
+    --glass:   rgba(247, 242, 235, .74);
+
+    --display: 'Prata', 'Times New Roman', serif;
+    --text: 'Golos Text', -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+    --t-xs: .75rem;     /* служебные подписи */
+    --t-sm: .8125rem;
+    --t-base: .9375rem;
+    --t-md: 1.0625rem;  /* основной текст */
+    --t-lg: clamp(1.125rem, .95rem + .75vw, 1.3125rem);
+    --d-3: clamp(1.25rem, 1.05rem + .8vw, 1.625rem);
+    --d-2: clamp(1.75rem, 1.3rem + 1.9vw, 2.625rem);
+    --d-1: clamp(2.15rem, 1.5rem + 2.7vw, 3.5rem);
+
+    --s-1: .25rem; --s-2: .5rem; --s-3: .75rem; --s-4: 1rem;
+    --s-5: 1.5rem; --s-6: 2rem; --s-7: 3rem; --s-8: 4rem;
+
+    --r-pill: 999px;
+    --r-lg: 26px;
+    --r-md: 18px;
+    --r-sm: 12px;
+
+    --band: clamp(4.5rem, 3rem + 7vw, 8.25rem);
+    --frame: 1180px;
+    --gutter: clamp(1.25rem, .6rem + 2.4vw, 2.75rem);
+
+    --ease: cubic-bezier(.22, .61, .36, 1);
+    --ease-out: cubic-bezier(.2, 0, 0, 1);
+
+    /* «Ресничная» линейка — фирменный разделитель, повторяется по секциям. */
+    --fringe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='16' viewBox='0 0 120 16'%3E%3Cg fill='%23231d18' fill-opacity='.5'%3E%3Cpath d='M4.67 15.47L4.30 15.04L3.95 14.62L3.64 14.19L3.35 13.76L3.08 13.32L2.84 12.89L2.62 12.45L2.43 12.01L2.27 11.56L2.12 11.11L2.01 10.66L1.91 10.20L1.85 9.73L1.80 9.26L1.78 8.78L1.78 8.29L1.81 7.79L1.82 7.27L1.82 7.27L1.60 7.74L1.44 8.23L1.32 8.73L1.23 9.23L1.17 9.74L1.15 10.25L1.15 10.77L1.19 11.29L1.26 11.81L1.37 12.34L1.50 12.86L1.67 13.39L1.87 13.91L2.10 14.44L2.36 14.96L2.66 15.49L2.98 16.01L3.33 16.53Z'/%3E%3Cpath d='M19.69 15.50L19.25 14.94L18.85 14.38L18.48 13.82L18.14 13.26L17.83 12.69L17.56 12.13L17.32 11.56L17.11 11.00L16.93 10.43L16.79 9.85L16.67 9.27L16.59 8.69L16.54 8.10L16.52 7.50L16.53 6.90L16.57 6.29L16.64 5.67L16.71 5.04L16.71 5.04L16.43 5.62L16.23 6.23L16.07 6.84L15.94 7.46L15.86 8.08L15.82 8.72L15.81 9.35L15.85 9.99L15.92 10.64L16.03 11.28L16.19 11.93L16.37 12.58L16.60 13.24L16.87 13.89L17.17 14.54L17.52 15.20L17.90 15.85L18.31 16.50Z'/%3E%3Cpath d='M34.70 15.52L34.21 14.83L33.76 14.13L33.34 13.43L32.97 12.74L32.63 12.04L32.34 11.35L32.08 10.65L31.86 9.95L31.68 9.26L31.54 8.56L31.44 7.85L31.38 7.15L31.35 6.44L31.37 5.72L31.42 5.00L31.51 4.28L31.63 3.54L31.77 2.79L31.77 2.79L31.43 3.48L31.17 4.20L30.96 4.92L30.80 5.65L30.68 6.40L30.61 7.15L30.58 7.90L30.60 8.66L30.67 9.43L30.78 10.20L30.93 10.98L31.14 11.75L31.38 12.54L31.68 13.32L32.01 14.11L32.40 14.90L32.82 15.69L33.30 16.48Z'/%3E%3Cpath d='M49.72 15.55L49.40 15.08L49.11 14.62L48.85 14.16L48.61 13.70L48.39 13.23L48.20 12.77L48.04 12.31L47.90 11.85L47.79 11.39L47.70 10.93L47.63 10.46L47.59 10.00L47.58 9.52L47.59 9.05L47.63 8.57L47.69 8.08L47.77 7.59L47.84 7.07L47.84 7.07L47.56 7.52L47.35 7.99L47.17 8.47L47.02 8.96L46.91 9.46L46.82 9.96L46.77 10.48L46.75 11.00L46.76 11.53L46.81 12.06L46.88 12.60L46.99 13.14L47.13 13.68L47.29 14.23L47.49 14.78L47.72 15.33L47.99 15.89L48.28 16.45Z'/%3E%3Cpath d='M64.74 15.58L64.37 14.97L64.03 14.37L63.73 13.77L63.46 13.17L63.22 12.58L63.01 11.99L62.84 11.40L62.70 10.81L62.59 10.22L62.51 9.64L62.46 9.05L62.45 8.46L62.46 7.87L62.51 7.28L62.59 6.68L62.70 6.08L62.84 5.47L62.98 4.85L62.98 4.85L62.64 5.40L62.37 5.97L62.14 6.56L61.95 7.16L61.79 7.78L61.68 8.40L61.60 9.03L61.56 9.67L61.56 10.32L61.60 10.97L61.67 11.64L61.78 12.30L61.94 12.98L62.13 13.66L62.35 14.34L62.62 15.03L62.92 15.72L63.26 16.42Z'/%3E%3Cpath d='M79.75 15.61L79.34 14.86L78.97 14.11L78.64 13.37L78.35 12.64L78.10 11.91L77.88 11.19L77.71 10.47L77.57 9.75L77.47 9.04L77.42 8.32L77.39 7.61L77.41 6.90L77.47 6.20L77.57 5.49L77.70 4.78L77.87 4.07L78.08 3.35L78.30 2.62L78.30 2.62L77.89 3.27L77.54 3.95L77.25 4.64L77.01 5.35L76.80 6.08L76.65 6.81L76.53 7.56L76.47 8.32L76.44 9.09L76.47 9.87L76.53 10.66L76.64 11.45L76.80 12.26L77.00 13.07L77.25 13.89L77.53 14.72L77.87 15.55L78.25 16.39Z'/%3E%3Cpath d='M94.77 15.64L94.51 15.14L94.27 14.64L94.06 14.15L93.88 13.67L93.72 13.18L93.58 12.70L93.47 12.23L93.39 11.76L93.33 11.28L93.29 10.81L93.28 10.34L93.29 9.87L93.33 9.40L93.40 8.93L93.49 8.46L93.60 7.98L93.74 7.50L93.87 7.00L93.87 7.00L93.55 7.41L93.28 7.85L93.05 8.31L92.85 8.78L92.67 9.26L92.53 9.75L92.42 10.26L92.34 10.77L92.29 11.30L92.27 11.83L92.29 12.37L92.33 12.92L92.40 13.48L92.51 14.05L92.64 14.62L92.81 15.19L93.01 15.77L93.23 16.36Z'/%3E%3Cpath d='M109.78 15.67L109.49 15.02L109.22 14.38L108.99 13.75L108.79 13.13L108.62 12.51L108.48 11.90L108.38 11.30L108.30 10.70L108.26 10.10L108.25 9.51L108.27 8.92L108.32 8.33L108.41 7.75L108.52 7.16L108.67 6.58L108.85 6.00L109.06 5.41L109.27 4.80L109.27 4.80L108.87 5.31L108.53 5.85L108.24 6.41L107.98 6.99L107.75 7.58L107.57 8.18L107.42 8.80L107.30 9.43L107.23 10.07L107.19 10.73L107.19 11.40L107.22 12.07L107.30 12.76L107.41 13.46L107.56 14.16L107.74 14.88L107.96 15.60L108.22 16.33Z'/%3E%3C/g%3E%3Crect y='15' width='120' height='.7' fill='%23231d18' fill-opacity='.22'/%3E%3C/svg%3E");
+  }
+}
+
+/* ---------- BASE ---------- */
+@layer base {
+  body {
+    font-family: var(--text);
+    font-size: var(--t-md);
+    line-height: 1.6;
+    color: var(--ink-2);
+    background: var(--paper);
+    overflow-x: clip;
+    font-variant-numeric: tabular-nums;
+  }
+  h1, h2, h3 { font-family: var(--display); font-weight: 400; line-height: 1.08; color: var(--ink); text-wrap: balance; letter-spacing: -.005em; }
+  h1 { font-size: var(--d-1); letter-spacing: -.018em; }
+  h2 { font-size: var(--d-2); }
+  h3 { font-size: var(--d-3); }
+  p { text-wrap: pretty; }
+  strong { font-weight: 600; color: var(--ink); }
+  ::selection { background: var(--sand); color: var(--ink); }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 4px; }
+  .on-dark :focus-visible { outline-color: var(--paper); }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+}
+
+/* ---------- LAYOUT ----------
+   «Хребет» страницы: узкая колонка полей слева под служебную подпись и
+   широкая — под содержание. На телефоне складывается в одну колонку.     */
+@layer layout {
+  .wrap { width: 100%; max-width: var(--frame); margin-inline: auto; padding-inline: var(--gutter); }
+  .band { padding-block: var(--band); position: relative; }
+  .band--tint { background: var(--paper-2); }
+
+  .spine { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
+  @media (min-width: 62rem) {
+    .spine { grid-template-columns: 9.5rem minmax(0, 1fr); gap: clamp(2rem, 4vw, 3.5rem); align-items: start; }
+  }
+  .spine__label {
+    font-size: var(--t-xs); letter-spacing: .1em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 500; padding-top: .45rem;
+    display: flex; align-items: center; gap: .6rem;
+  }
+  .spine__label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+  @media (min-width: 62rem) {
+    .spine > .spine__label { position: sticky; top: 6.5rem; }
+    .spine > .spine__label::after { display: none; }
+  }
+
+  .fringe { height: 16px; background-image: var(--fringe); background-repeat: repeat-x; background-position: bottom left; opacity: .85; }
+  .stack > * + * { margin-top: var(--s-4); }
+}
+</style>
+
+<style>
+/* ---------- COMPONENTS ---------- */
+@layer components {
+
+  /* --- Кнопки: таблетки. Заливка — только у главного действия. --- */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    min-height: 3rem; padding: .7rem 1.6rem; border-radius: var(--r-pill);
+    font-size: var(--t-base); font-weight: 500; letter-spacing: .005em;
+    text-decoration: none; white-space: nowrap;
+    transition: background-color .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease), box-shadow .2s var(--ease), scale .12s var(--ease);
+  }
+  .btn:active { scale: .96; }
+  .btn--primary { background: var(--ink); color: var(--paper); box-shadow: 0 1px 2px rgba(28,23,20,.18), 0 8px 20px -10px rgba(28,23,20,.5); }
+  .btn--ghost { border: 1px solid var(--line); color: var(--ink); }
+  .btn--light { background: var(--paper); color: var(--ink); }
+  .btn--full { width: 100%; }
+  @media (hover: hover) {
+    .btn--primary:hover { background: #2E2620; }
+    .btn--ghost:hover { border-color: var(--ink); background: rgba(28,23,20,.04); }
+    .btn--light:hover { background: #fff; }
+  }
+
+  .link-u { text-decoration: none; padding-bottom: 2px;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 100% 1px; background-repeat: no-repeat; background-position: 0 100%;
+    transition: background-size .3s var(--ease-out); }
+  @media (hover: hover) { .link-u:hover { background-size: 0 1px; background-position: 100% 100%; } }
+
+  .star { width: .85em; height: .85em; fill: currentColor; flex: none; }
+
+  /* --- Шапка --- */
+  .hdr { position: sticky; top: 0; z-index: 50; }
+  .hdr__in {
+    display: flex; align-items: center; gap: var(--s-4);
+    min-height: 4.25rem; padding-inline: var(--gutter);
+    max-width: var(--frame); margin-inline: auto;
+  }
+  .hdr::before {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    background: var(--glass); backdrop-filter: blur(14px) saturate(1.3); -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    border-bottom: 1px solid transparent;
+    opacity: 0; transition: opacity .3s var(--ease), border-color .3s var(--ease);
+  }
+  .hdr--stuck::before { opacity: 1; border-bottom-color: var(--line-2); }
+
+  .logo { display: flex; flex: none; align-items: baseline; gap: .55rem; text-decoration: none; white-space: nowrap; }
+  .logo__mark { font-family: var(--display); font-size: 1.375rem; letter-spacing: .16em; color: var(--ink); }
+  .logo__sub { font-size: .625rem; letter-spacing: .22em; text-transform: uppercase; color: var(--ink-3); }
+  @media (max-width: 26rem) { .logo__sub { display: none; } }
+
+  .rating { display: inline-flex; align-items: center; gap: .4rem; padding: .35rem .75rem .35rem .6rem;
+    border: 1px solid var(--line); border-radius: var(--r-pill); font-size: var(--t-sm); color: var(--ink);
+    text-decoration: none; white-space: nowrap; }
+  .rating b { font-weight: 600; }
+  .rating span { color: var(--ink-3); }
+  @media (max-width: 30rem) { .rating span { display: none; } }
+
+  .nav { display: none; margin-left: auto; gap: 1.4rem; font-size: var(--t-base); }
+  .nav a { text-decoration: none; color: var(--ink-2); padding-block: .5rem; }
+  @media (hover: hover) { .nav a:hover { color: var(--ink); } }
+  @media (min-width: 60rem) { .nav { display: flex; } }
+  .hdr__cta { margin-left: auto; min-height: 2.6rem; padding: .5rem 1.25rem; }
+  @media (min-width: 60rem) { .hdr__cta { margin-left: 0; } }
+  @media (max-width: 34rem) { .hdr__cta { display: none; } }
+
+  /* --- Главный экран --- */
+  .hero { padding-top: clamp(1.5rem, 3vw, 3rem); padding-bottom: var(--band); }
+  .hero__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(1.75rem, 4vw, 3rem); align-items: center; }
+  .hero__media { position: relative; border-radius: var(--r-lg); overflow: hidden; outline: 1px solid rgba(0,0,0,.1); outline-offset: -1px; }
+  .hero__media img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+  .hero__kicker { font-size: var(--t-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-bottom: var(--s-4); }
+  .hero h1 { margin-bottom: var(--s-4); }
+  .hero__lead { font-size: var(--t-lg); color: var(--ink-2); max-width: 34ch; }
+  .hero__act { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-5); }
+
+  /* Стеклянная плашка с фактами: единственное место, где стекло лежит
+     на фотографии и потому имеет смысл. */
+  .facts {
+    margin-top: var(--s-5);
+    padding: var(--s-4) var(--s-5); border-radius: var(--r-md);
+    background: var(--glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,.55);
+    box-shadow: 0 1px 2px rgba(28,23,20,.06), 0 18px 40px -28px rgba(28,23,20,.6);
+  }
+  .facts dl { display: flex; flex-wrap: wrap; gap: .5rem 1.75rem; margin: 0; }
+  .facts div { display: flex; align-items: baseline; gap: .45rem; }
+  .facts dt { font-size: var(--t-sm); color: var(--ink-3); order: 2; }
+  .facts dd { margin: 0; font-family: var(--display); font-size: 1.3rem; color: var(--ink); order: 1; line-height: 1; }
+
+  @media (min-width: 60rem) {
+    .hero__grid { grid-template-columns: minmax(0, 1.06fr) minmax(0, 1fr); }
+    .hero__media { margin-right: calc(50% - 50vw); border-radius: var(--r-lg) 0 0 var(--r-lg); }
+    .hero__media img { aspect-ratio: auto; height: clamp(26rem, 68svh, 38rem); }
+    .facts { margin-right: -3.5rem; position: relative; z-index: 2; }
+  }
+  @media (max-width: 59.99rem) {
+    .hero__grid { grid-template-columns: 1fr; }
+    .hero__media { order: -1; margin-inline: calc(var(--gutter) * -1); border-radius: 0 0 var(--r-lg) var(--r-lg); }
+    .hero__media img { aspect-ratio: 1 / 1; }
+  }
+
+  /* --- Чем отличаемся: три строки, разделённые линейкой --- */
+  .rows { border-top: 1px solid var(--line); }
+  .row { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-4); padding-block: clamp(1.75rem, 3.5vw, 2.75rem); border-bottom: 1px solid var(--line); align-items: start; }
+  @media (min-width: 48rem) { .row { grid-template-columns: 8.5rem minmax(0, 1fr) 13rem; gap: clamp(1.5rem, 3vw, 2.5rem); } }
+  .row__no { font-size: var(--t-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); padding-top: .35rem; }
+  .row h3 { margin-bottom: .5rem; }
+  .row p { max-width: 58ch; }
+  .row__img { border-radius: var(--r-md); overflow: hidden; outline: 1px solid rgba(0,0,0,.1); outline-offset: -1px; }
+  .row__img img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; }
+  @media (max-width: 47.99rem) { .row__img { display: none; } }
+
+  /* --- Каталог эффектов --- */
+  .tabs { display: flex; gap: .25rem; overflow-x: auto; scrollbar-width: none;
+    margin-bottom: var(--s-6); border-bottom: 1px solid var(--line); }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { position: relative; padding: .7rem .95rem 1rem; white-space: nowrap; color: var(--ink-3);
+    font-size: var(--t-md); transition: color .2s var(--ease); }
+  .tab::after { content: ""; position: absolute; left: .35rem; right: .35rem; bottom: -1px; height: 2px; background: var(--ink);
+    scale: 0 1; transform-origin: left; transition: scale .3s var(--ease-out); }
+  @media (hover: hover) { .tab:hover { color: var(--ink-2); } }
+  .tab[aria-selected="true"] { color: var(--ink); }
+  .tab[aria-selected="true"]::after { scale: 1 1; }
+
+  .fx { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(1.5rem, 3.5vw, 3rem); }
+  @media (min-width: 54rem) { .fx { grid-template-columns: minmax(0, .85fr) minmax(0, 1fr); align-items: start; } }
+  .fx__media { border-radius: var(--r-lg); overflow: hidden; outline: 1px solid rgba(0,0,0,.1); outline-offset: -1px; }
+  .fx__media img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+  .fx__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--s-3); }
+  .fx__price { font-family: var(--display); font-size: clamp(1.75rem, 1.2rem + 1.8vw, 2.4rem); color: var(--ink); white-space: nowrap; line-height: 1; }
+  .fx__price small { font-size: .5em; color: var(--ink-3); }
+  .fx__desc { margin-top: var(--s-4); max-width: 54ch; }
+  .fx__meta { margin-top: var(--s-5); border-top: 1px solid var(--line); }
+  .fx__meta div { display: flex; gap: var(--s-4); justify-content: space-between; padding-block: .7rem; border-bottom: 1px solid var(--line-2); font-size: var(--t-base); }
+  .fx__meta dt { color: var(--ink-3); }
+  .fx__meta dd { margin: 0; text-align: right; color: var(--ink); }
+
+  /* Схема веера: сколько волосков и как они стоят. Смысловой центр
+     каталога — отвечает на вопрос «чем 2D отличается от 3D». */
+  .scheme { display: flex; align-items: flex-end; gap: var(--s-4); margin-top: var(--s-5);
+    padding: var(--s-4) var(--s-5) 0; background: var(--paper);
+    border-radius: var(--r-md); border: 1px solid var(--line-2); }
+  .diagram { height: 8.5rem; width: auto; flex: none; max-width: 45%; }
+  .scheme p { min-width: 0; }
+  .dg-nat { fill: var(--steel); }
+  .dg-ext { fill: var(--ink); fill-opacity: .88; transform-box: view-box; }
+  .scheme p { font-size: var(--t-base); color: var(--ink-3); padding-bottom: var(--s-5); }
+  .scheme b { display: block; color: var(--ink); font-weight: 500; font-size: var(--t-md); margin-bottom: .2rem; }
+  .scheme i { font-style: normal; color: var(--steel-ink); }
+  .fx__act { margin-top: var(--s-5); display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; }
+  .fx__note { font-size: var(--t-sm); color: var(--ink-3); margin-top: var(--s-4); max-width: 46ch; }
+}
+</style>
+
+<style>
+@layer components {
+
+  /* --- Свободные окна --- */
+  .slots { position: relative; border-radius: var(--r-lg); overflow: hidden; isolation: isolate;
+    outline: 1px solid rgba(0,0,0,.1); outline-offset: -1px; }
+  .slots__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 62%; z-index: -2; }
+  .slots__in { padding: clamp(1.5rem, 4vw, 3rem); background: rgba(247, 242, 235, .5);
+    backdrop-filter: blur(7px) saturate(1.1); -webkit-backdrop-filter: blur(7px) saturate(1.1); }
+  .slots__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-5); }
+  @media (min-width: 52rem) { .slots__grid { grid-template-columns: minmax(0, 1fr) auto; align-items: end; } }
+  .slots h2 { margin-bottom: var(--s-3); }
+  .slots p { max-width: 46ch; color: var(--ink-2); }
+  .chips { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: var(--s-5); }
+  .chip { display: inline-flex; flex-direction: column; gap: .1rem; padding: .55rem .95rem;
+    border-radius: var(--r-sm); border: 1px solid var(--line); background: rgba(255,255,255,.5); }
+  .chip b { font-size: var(--t-md); font-weight: 500; color: var(--ink); line-height: 1.2; }
+  .chip span { font-size: var(--t-xs); color: var(--ink-3); letter-spacing: .04em; }
+  .slots__cut { margin-top: var(--s-5); padding-top: var(--s-5); border-top: 1px dashed var(--line); font-size: var(--t-sm); color: var(--ink-3); }
+
+  /* --- Горизонтальные ленты --- */
+  .rail-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--s-4); margin-bottom: var(--s-5); }
+  .rail-ctrl { display: none; gap: .5rem; }
+  @media (min-width: 48rem) { .rail-ctrl { display: flex; } }
+  .rail-btn { width: 2.75rem; height: 2.75rem; border-radius: var(--r-pill); border: 1px solid var(--line);
+    display: grid; place-items: center; color: var(--ink);
+    transition: background-color .2s var(--ease), border-color .2s var(--ease), opacity .2s var(--ease); }
+  .rail-btn svg { width: 1.1rem; height: 1.1rem; fill: none; stroke: currentColor; stroke-width: 1.5; }
+  @media (hover: hover) { .rail-btn:hover { background: rgba(28,23,20,.05); border-color: var(--ink); } }
+  .rail-btn[disabled] { opacity: .3; cursor: default; }
+
+  .rail { display: flex; gap: clamp(.75rem, 1.5vw, 1.25rem); overflow-x: auto; scrollbar-width: none;
+    scroll-snap-type: x proximity; overscroll-behavior-x: contain;
+    padding-inline: var(--gutter); margin-inline: calc(var(--gutter) * -1);
+    padding-bottom: var(--s-4); cursor: grab; }
+  .rail::-webkit-scrollbar { display: none; }
+  .rail.is-drag { cursor: grabbing; scroll-snap-type: none; }
+  .rail.is-drag * { pointer-events: none; }
+  .rail > * { flex: 0 0 auto; scroll-snap-align: start; }
+  .rail-bar { height: 2px; background: var(--line-2); border-radius: 2px; overflow: hidden; }
+  .rail-bar i { display: block; height: 100%; background: var(--ink); opacity: .55; border-radius: 2px;
+    transform-origin: left; transition: translate .15s linear; }
+
+  /* --- Портфолио --- */
+  .rail { --rail-h: clamp(16rem, 52vw, 21rem); }
+  .work { width: calc(var(--rail-h) * .8); }
+  .work--wide { width: calc(var(--rail-h) * 1.5); }
+  .work__frame { position: relative; border-radius: var(--r-md); overflow: hidden;
+    outline: 1px solid rgba(0,0,0,.1); outline-offset: -1px; background: var(--linen); }
+  .work__frame img, .work__frame video { width: 100%; height: var(--rail-h); object-fit: cover; }
+  .work__cap { display: flex; gap: .5rem; align-items: baseline; margin-top: .7rem; font-size: var(--t-sm); color: var(--ink-3); }
+  .work__cap b { font-weight: 500; color: var(--ink-2); }
+  .vid-btn { position: absolute; left: .6rem; bottom: .6rem; width: 2.25rem; height: 2.25rem;
+    border-radius: var(--r-pill); display: grid; place-items: center;
+    background: rgba(247,242,235,.82); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    color: var(--ink); border: 1px solid rgba(255,255,255,.5); }
+  .vid-btn svg { width: .9rem; height: .9rem; fill: currentColor; }
+  .vid-btn .i-play { display: none; }
+  .vid-btn[data-paused="true"] .i-play { display: block; }
+  .vid-btn[data-paused="true"] .i-pause { display: none; }
+
+  /* --- Как проходит процедура --- */
+  .steps { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; }
+  @media (min-width: 60rem) { .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(1rem, 2vw, 2rem); } }
+  .step { position: relative; padding-block: var(--s-5); border-top: 1px solid var(--line); }
+  @media (min-width: 60rem) { .step { padding-top: var(--s-6); } }
+  .step::before { content: ""; position: absolute; top: -4px; left: 0; width: 7px; height: 7px;
+    border-radius: 50%; background: var(--ink); }
+  .step__t { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-3); margin-bottom: .6rem; }
+  .step__n { font-family: var(--display); font-size: 1.5rem; color: var(--ink); line-height: 1; }
+  .step__d { font-size: var(--t-sm); color: var(--steel-ink); white-space: nowrap; }
+  .step h3 { font-size: 1.125rem; margin-bottom: .4rem; }
+  .step p { font-size: var(--t-base); max-width: 40ch; }
+  .steps__total { margin-top: var(--s-5); padding-top: var(--s-4); border-top: 1px solid var(--line);
+    font-size: var(--t-base); color: var(--ink-3); }
+
+  /* --- Отзывы --- */
+  .rv { width: clamp(16rem, 76vw, 21rem); display: flex; flex-direction: column;
+    padding: var(--s-5); border-radius: var(--r-md); background: var(--paper); border: 1px solid var(--line-2); }
+  .band--tint .rv { background: var(--paper); }
+  .rv__q { font-size: var(--t-base); color: var(--ink-2); overflow: hidden;
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 6; line-clamp: 6; }
+  .rv__more { align-self: flex-start; margin-top: var(--s-3); font-size: var(--t-sm); color: var(--ink);
+    text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  .rv__f { display: flex; align-items: center; gap: .7rem; margin-top: auto; padding-top: var(--s-5); }
+  .rv__av { width: 2.25rem; height: 2.25rem; border-radius: 50%; background: var(--linen); color: var(--ink);
+    display: grid; place-items: center; font-size: var(--t-sm); font-weight: 500; flex: none; }
+  .rv__who { display: block; font-size: var(--t-base); color: var(--ink); line-height: 1.3; }
+  .rv__meta { display: block; font-size: var(--t-xs); color: var(--ink-3); }
+  .stars { display: flex; gap: 2px; color: var(--ink); margin-bottom: var(--s-3); }
+
+  /* margin: auto возвращает центрирование, которое снял общий сброс полей. */
+  dialog {
+    margin: auto;
+    width: min(34rem, calc(100vw - 2rem)); max-height: min(80svh, 40rem); padding: 0;
+    border: 0; border-radius: var(--r-lg); background: var(--paper); color: var(--ink-2);
+    overscroll-behavior: contain; box-shadow: 0 18px 48px -24px rgba(28,23,20,.55);
+  }
+  dialog::backdrop { background: rgba(28,23,20,.45); backdrop-filter: blur(3px); }
+  .dlg { padding: clamp(1.5rem, 4vw, 2.25rem); }
+  .dlg__x { position: absolute; top: .85rem; right: .85rem; width: 2.25rem; height: 2.25rem;
+    border-radius: var(--r-pill); display: grid; place-items: center; color: var(--ink-3); }
+  @media (hover: hover) { .dlg__x:hover { background: rgba(28,23,20,.06); color: var(--ink); } }
+  .dlg__x svg { width: 1rem; height: 1rem; stroke: currentColor; stroke-width: 1.6; fill: none; }
+  .dlg p + p { margin-top: var(--s-4); }
+
+  /* --- Обо мне --- */
+  .about { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(1.75rem, 4vw, 3.5rem); align-items: start; }
+  @media (min-width: 54rem) { .about { grid-template-columns: minmax(0, .78fr) minmax(0, 1fr); } }
+  .about__img { border-radius: var(--r-lg); overflow: hidden; outline: 1px solid rgba(0,0,0,.1); outline-offset: -1px; }
+  .about__img img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+  .about__sign { font-family: var(--display); font-size: 1.125rem; color: var(--ink); margin-top: var(--s-5); }
+  .about p { max-width: 56ch; }
+  .about p + p { margin-top: var(--s-4); }
+  .creds { margin-top: var(--s-5); border-top: 1px solid var(--line); }
+  .creds div { display: flex; gap: var(--s-4); justify-content: space-between; padding-block: .65rem;
+    border-bottom: 1px solid var(--line-2); font-size: var(--t-base); }
+  .creds dt { color: var(--ink-3); }
+  .creds dd { margin: 0; text-align: right; color: var(--ink); }
+  .msg { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-5); }
+  .msg .btn { padding-inline: 1.25rem; }
+  .msg svg { width: 1.05rem; height: 1.05rem; fill: currentColor; }
+
+  /* --- Где находимся --- */
+  .place { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(1.5rem, 3.5vw, 3rem); align-items: start; }
+  @media (min-width: 54rem) { .place { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); } }
+  .place__img { border-radius: var(--r-lg); overflow: hidden; outline: 1px solid rgba(0,0,0,.1); outline-offset: -1px; }
+  .place__img img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+  .place__addr { font-family: var(--display); font-size: 1.375rem; color: var(--ink); line-height: 1.3; }
+  .place dl { margin-top: var(--s-5); border-top: 1px solid var(--line); }
+  .place dl div { display: flex; gap: var(--s-4); justify-content: space-between; padding-block: .65rem;
+    border-bottom: 1px solid var(--line-2); font-size: var(--t-base); }
+  .place dt { color: var(--ink-3); }
+  .place dd { margin: 0; text-align: right; color: var(--ink); }
+
+  /* --- FAQ --- */
+  .faq { border-top: 1px solid var(--line); }
+  .faq details { border-bottom: 1px solid var(--line); }
+  .faq summary { display: flex; align-items: flex-start; gap: var(--s-4); justify-content: space-between;
+    padding-block: clamp(1rem, 2vw, 1.35rem); cursor: pointer; list-style: none;
+    font-family: var(--display); font-size: clamp(1.0625rem, .95rem + .5vw, 1.3125rem); color: var(--ink); line-height: 1.3; }
+  @media (hover: hover) { .faq summary:hover { color: var(--ink-2); } }
+  .faq summary:focus-visible { outline-offset: -2px; }
+  .faq__ico { flex: none; width: 1.25rem; height: 1.25rem; margin-top: .3rem; position: relative; }
+  .faq__ico::before, .faq__ico::after { content: ""; position: absolute; inset: 50% 0 auto; height: 1px; background: var(--ink); }
+  .faq__ico::after { rotate: 90deg; transition: rotate .3s var(--ease-out); }
+  .faq details[open] .faq__ico::after { rotate: 0deg; }
+  .faq__body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .32s var(--ease-out); }
+  .faq details[open] .faq__body { grid-template-rows: 1fr; }
+  .faq details[open] .faq__body.is-closing { grid-template-rows: 0fr; }
+  .faq__body > div { overflow: hidden; }
+  .faq__body p { padding-bottom: clamp(1rem, 2vw, 1.35rem); max-width: 62ch; font-size: var(--t-base); }
+
+  /* --- Памятка --- */
+  .care { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-5); margin-top: var(--s-4); padding: clamp(1.5rem, 3.5vw, 2.5rem);
+    background: var(--linen); border-radius: var(--r-lg); }
+  @media (min-width: 52rem) { .care { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.5rem, 3vw, 2.5rem); } }
+  .care__h { font-size: var(--t-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--ink);
+    padding-bottom: .6rem; margin-bottom: .9rem; border-bottom: 1px solid rgba(28,23,20,.18); font-weight: 500; }
+  .care li { position: relative; padding-left: 1.1rem; font-size: var(--t-base); color: var(--ink-2); }
+  .care li + li { margin-top: .55rem; }
+  .care li::before { content: ""; position: absolute; left: 0; top: .62em; width: 5px; height: 1px; background: var(--ink); opacity: .55; }
+  .care__note { grid-column: 1 / -1; padding-top: var(--s-4); border-top: 1px solid rgba(28,23,20,.18);
+    font-size: var(--t-sm); color: var(--ink-2); }
+
+  /* --- Подвал --- */
+  .ftr { background: var(--ink); color: #CFC3B6; padding-block: var(--band) var(--s-6); }
+  .ftr h2 { color: var(--paper); }
+  .ftr a { color: var(--paper); }
+  .ftr__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-6); }
+  @media (min-width: 52rem) { .ftr__grid { grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: clamp(2rem, 5vw, 5rem); } }
+  .ftr__contacts { display: grid; gap: .6rem; font-size: var(--t-md); }
+  .ftr__contacts a { text-decoration: none; justify-self: start; white-space: nowrap; }
+  .ftr__soc { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: var(--s-5); }
+  .ftr__soc a { display: inline-flex; align-items: center; gap: .45rem; padding: .5rem 1rem;
+    border: 1px solid rgba(243,236,227,.22); border-radius: var(--r-pill); font-size: var(--t-base); text-decoration: none;
+    transition: border-color .2s var(--ease), background-color .2s var(--ease); }
+  @media (hover: hover) { .ftr__soc a:hover { border-color: rgba(243,236,227,.55); background: rgba(243,236,227,.06); } }
+  .ftr__soc svg { width: 1rem; height: 1rem; fill: currentColor; }
+  .refer { padding: var(--s-5); border: 1px dashed rgba(243,236,227,.3); border-radius: var(--r-md); max-width: 24rem; }
+  .refer b { display: block; font-family: var(--display); font-size: var(--d-3); color: var(--paper); margin-bottom: .5rem; font-weight: 400; }
+  .refer p { font-size: var(--t-base); }
+  .ftr__fine { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; justify-content: space-between;
+    margin-top: var(--s-4); padding-top: var(--s-5);
+    font-size: var(--t-xs); color: #9A8E82; }
+
+  /* --- Нижняя панель записи на телефоне --- */
+  .cta-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    padding: .6rem var(--gutter) calc(.6rem + env(safe-area-inset-bottom));
+    background: var(--glass); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line-2);
+    translate: 0 110%; transition: translate .35s var(--ease); }
+  .cta-bar.is-on { translate: 0 0; }
+  @media (min-width: 48rem) { .cta-bar { display: none; } }
+  .cta-bar__in { display: flex; align-items: center; gap: var(--s-4); max-width: var(--frame); margin-inline: auto; }
+  .cta-bar b { font-size: var(--t-sm); font-weight: 500; color: var(--ink); line-height: 1.25; }
+  .cta-bar span { display: block; font-size: var(--t-xs); color: var(--ink-3); font-weight: 400; }
+  .cta-bar .btn { margin-left: auto; min-height: 2.75rem; }
+}
+
+/* ---------- UTILS ---------- */
+@layer utils {
+  .sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap; border: 0; }
+  .skip { position: absolute; left: var(--gutter); top: .5rem; z-index: 100; padding: .6rem 1.1rem;
+    border-radius: var(--r-pill); background: var(--ink); color: var(--paper); text-decoration: none;
+    translate: 0 -200%; }
+  .skip:focus { translate: 0 0; }
+  .lead { font-size: var(--t-lg); color: var(--ink-2); max-width: 46ch; }
+  .eyebrow { font-size: var(--t-xs); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3);
+    font-weight: 500; margin-bottom: 1rem; }
+  .muted { color: var(--ink-3); }
+  .mt-6 { margin-top: var(--s-6); }
+  .mt-7 { margin-top: var(--s-7); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { opacity: 0; translate: 0 14px; transition: opacity .6s var(--ease-out), translate .6s var(--ease-out); transition-delay: var(--d, 0ms); }
+    .reveal.is-in { opacity: 1; translate: 0 0; }
+    [data-anim="splay"] .dg-ext { animation: splay .55s var(--ease-out) backwards; animation-delay: calc(var(--i, 0) * 70ms + 60ms); }
+    @keyframes splay { from { rotate: var(--rot, 0deg); opacity: .15; } to { rotate: 0deg; opacity: 1; } }
+    [data-anim] .fx__body { animation: rise .45s var(--ease-out) backwards; }
+    @keyframes rise { from { opacity: 0; translate: 0 10px; } to { opacity: 1; translate: 0 0; } }
+    [data-anim] .fx__media img { animation: fade .5s var(--ease-out) backwards; }
+    @keyframes fade { from { opacity: 0; scale: 1.03; } to { opacity: 1; scale: 1; } }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+      transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  }
+}
+</style>
+
+</head>
+<body>
+<noscript><style>.reveal { opacity: 1 !important; translate: none !important; }</style></noscript>
+<a class="skip" href="#main">К содержанию</a>
+
+<!-- ======================= ШАПКА ======================= -->
+<header class="hdr" id="hdr">
+  <div class="hdr__in">
+    <a class="logo" href="#top" aria-label="СОБОЛЬ — студия наращивания ресниц, наверх">
+      <span class="logo__mark">СОБОЛЬ</span>
+      <span class="logo__sub">lash studio</span>
+    </a>
+
+    <a class="rating" href="#otzyvy">
+      <svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg>
+      <b>4,9</b><span>· 38 отзывов</span>
+    </a>
+
+    <nav class="nav" aria-label="Разделы страницы">
+      <a href="#effekty">Эффекты</a>
+      <a href="#raboty">Работы</a>
+      <a href="#otzyvy">Отзывы</a>
+      <a href="#obo-mne">Обо&nbsp;мне</a>
+      <a href="#kontakty">Контакты</a>
+    </nav>
+
+    <a class="btn btn--primary hdr__cta js-book" href="#">Записаться</a>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ======================= ГЛАВНЫЙ ЭКРАН ======================= -->
+<section class="wrap hero" id="top">
+  <div class="hero__grid">
+    <div>
+      <p class="hero__kicker">Наращивание ресниц · поштучно</p>
+      <h1>Ресницы, к&nbsp;которым не&nbsp;нужно привыкать</h1>
+      <p class="hero__lead">Работаю одна и беру двух человек в день. На одну работу уходит 2–3 часа, потому что каждую ресницу нужно отделить от соседних и поставить отдельно.</p>
+      <div class="hero__act">
+        <a class="btn btn--primary js-book" href="#">Записаться</a>
+        <a class="btn btn--ghost" href="#raboty">Посмотреть работы</a>
+      </div>
+      <div class="facts">
+        <dl>
+          <div><dd>4</dd><dt>года в работе</dt></div>
+          <div><dd>1 200</dd><dt>клиентов</dt></div>
+          <div><dd>0 ₽</dd><dt>снятие при записи</dt></div>
+        </dl>
+      </div>
+    </div>
+    <div class="hero__media">
+      <img src="assets/img/hero.webp" width="1400" height="1750" alt="Крупный план нарощенных ресниц: линия роста и отдельные волоски" fetchpriority="high" decoding="async">
+    </div>
+  </div>
+</section>
+
+<!-- ======================= ЧЕМ ОТЛИЧАЕМСЯ ======================= -->
+<section class="band band--tint" aria-labelledby="h-otlichiya">
+  <div class="wrap">
+    <div class="spine">
+      <p class="spine__label">Чем отличаемся</p>
+      <div>
+        <h2 id="h-otlichiya" class="reveal">Три вещи, из‑за которых работа держится дольше</h2>
+        <div class="rows mt-6">
+
+          <article class="row reveal">
+            <p class="row__no">Как делаем</p>
+            <div>
+              <h3>Изоляция каждой ресницы</h3>
+              <p>Волосок ставится на одну свою ресницу и ни на что больше. Если приклеить его сразу к двум, они начнут тянуть друг друга при росте — отсюда заломы, зуд и ресницы, выпадающие парами. Проверяю изоляцию щёточкой перед каждым веером.</p>
+            </div>
+            <div class="row__img"><img src="assets/img/diff-01.webp" width="900" height="700" alt="Веер из трёх волосков перед постановкой" loading="lazy" decoding="async"></div>
+          </article>
+
+          <article class="row reveal">
+            <p class="row__no">Кто делает</p>
+            <div>
+              <h3>Марина Соболева, без учеников и стажёров</h3>
+              <p>Принимаю сама, с 2021 года. Не беру больше двух человек в день — после третьей работы подряд рука теряет точность, и это видно на результате. Если вижу, что наращивать сейчас нельзя, говорю об этом до записи, а не в кресле.</p>
+            </div>
+            <div class="row__img"><img src="assets/img/diff-02.webp" width="900" height="700" alt="Пинцет с готовым веером из трёх волосков" loading="lazy" decoding="async"></div>
+          </article>
+
+          <article class="row reveal">
+            <p class="row__no">На чём</p>
+            <div>
+              <h3>Материалы под ваши глаза, а не одни на всех</h3>
+              <p>Три клея с разной скоростью сцепки: быстрый для плотных объёмов, медленный и почти без паров — для чувствительных глаз и линз. Волоски 0,03–0,10 мм. Толщину подбираю под то, сколько ваши ресницы реально вынесут.</p>
+            </div>
+            <div class="row__img"><img src="assets/img/diff-03.webp" width="900" height="700" alt="Линия роста ресниц крупным планом" loading="lazy" decoding="async"></div>
+          </article>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= КАТАЛОГ ЭФФЕКТОВ ======================= -->
+<section class="band" id="effekty" aria-labelledby="h-effekty">
+  <div class="wrap">
+    <div class="spine">
+      <p class="spine__label">Эффекты</p>
+      <div>
+        <h2 id="h-effekty" class="reveal">Пять эффектов. Разница — в&nbsp;числе волосков на одной реснице</h2>
+        <p class="lead muted reveal" style="margin-top:1rem">Цена за полный объём. Коррекция в срок до четырёх недель — минус 30%.</p>
+
+        <div class="mt-6" id="fx">
+          <div class="tabs" role="tablist" aria-label="Эффекты наращивания">
+            <button class="tab" role="tab" id="tab-classic" aria-controls="p-classic" aria-selected="true" tabindex="0">Классика</button>
+            <button class="tab" role="tab" id="tab-wet" aria-controls="p-wet" aria-selected="false" tabindex="-1">Мокрый</button>
+            <button class="tab" role="tab" id="tab-d15" aria-controls="p-d15" aria-selected="false" tabindex="-1">1,5D</button>
+            <button class="tab" role="tab" id="tab-d2" aria-controls="p-d2" aria-selected="false" tabindex="-1">2D</button>
+            <button class="tab" role="tab" id="tab-d3" aria-controls="p-d3" aria-selected="false" tabindex="-1">3D</button>
+          </div>
+          
+          <div class="fx" role="tabpanel" id="p-classic" aria-labelledby="tab-classic" tabindex="0">
+            <div class="fx__media">
+              <img src="assets/img/effect-classic.webp" width="1200" height="1500" alt="Результат: классика" loading="lazy" decoding="async">
+            </div>
+            <div class="fx__body">
+              <div class="fx__head">
+                <h3>Классика</h3>
+                <p class="fx__price">2 500 <small>₽</small></p>
+              </div>
+              <p class="fx__desc">Один искусственный волосок ставится на одну свою ресницу — столько волосков, сколько у вас ресниц. Со стороны читается как аккуратно накрашенные ресницы, только без туши и без осыпавшихся комочков к вечеру.</p>
+              <div class="scheme">
+                <svg class="diagram" viewBox="76 118 108 152" role="img" aria-label="Схема: один искусственный волосок на одну натуральную ресницу" focusable="false"><path d="M84 262 Q 130 250 176 262" fill="none" stroke="currentColor" stroke-opacity=".2" stroke-width="1.6" stroke-linecap="round"/><path class="dg-nat" d="M132.14 256.52L128.56 251.28L125.30 246.04L122.36 240.82L119.74 235.61L117.45 230.42L115.48 225.23L113.82 220.05L112.49 214.88L111.48 209.71L110.78 204.54L110.41 199.37L110.35 194.20L110.62 189.02L111.21 183.84L112.11 178.65L113.34 173.44L114.87 168.21L116.64 162.93L116.64 162.93L114.26 167.99L112.32 173.13L110.72 178.31L109.47 183.54L108.57 188.79L108.00 194.09L107.77 199.41L107.89 204.77L108.35 210.15L109.15 215.55L110.30 220.98L111.78 226.43L113.61 231.90L115.78 237.39L118.29 242.89L121.14 248.41L124.33 253.93L127.86 259.48Z"/><path class="dg-ext" style="--i:0;--rot:0.0deg;transform-origin:130px 258px" d="M132.71 256.97L129.72 249.07L127.07 241.26L124.76 233.52L122.78 225.86L121.14 218.28L119.83 210.78L118.85 203.34L118.21 195.99L117.90 188.70L117.93 181.48L118.29 174.34L118.98 167.26L120.01 160.24L121.37 153.29L123.06 146.40L125.09 139.56L127.43 132.78L130.00 126.00L130.00 126.00L126.76 132.50L123.96 139.16L121.54 145.94L119.46 152.82L117.75 159.80L116.38 166.88L115.36 174.06L114.70 181.33L114.38 188.70L114.41 196.16L114.80 203.71L115.53 211.36L116.62 219.09L118.05 226.91L119.84 234.81L121.97 242.80L124.46 250.88L127.29 259.03Z"/></svg>
+                <p><b>Один волосок на одну ресницу</b>Объём не добавляется — работает длина и изгиб. <i>Серым</i> — своя ресница.</p>
+              </div>
+              <dl class="fx__meta">
+                <div><dt>Кому подойдёт</dt><dd>если своих ресниц много</dd></div>
+                <div><dt>Держится</dt><dd>3–4 недели</dd></div>
+                <div><dt>Время</dt><dd>≈ 2 часа</dd></div>
+                <div><dt>Толщина волоска</dt><dd>0,10 мм</dd></div>
+              </dl>
+              <div class="fx__act">
+                <a class="btn btn--primary js-book" href="#" data-msg="Здравствуйте! Хочу записаться на наращивание, эффект «Классика».">Записаться на классику</a>
+              </div>
+              <p class="fx__note">Если своих ресниц мало, классика подчеркнёт просветы. В этом случае предложу 1,5D — та же лёгкость, но линия плотнее.</p>
+            </div>
+          </div>
+
+          <div class="fx" role="tabpanel" id="p-wet" aria-labelledby="tab-wet" tabindex="0" hidden>
+            <div class="fx__media">
+              <img src="assets/img/effect-wet.webp" width="1200" height="1500" alt="Результат: мокрый эффект" loading="lazy" decoding="async">
+            </div>
+            <div class="fx__body">
+              <div class="fx__head">
+                <h3>Мокрый эффект</h3>
+                <p class="fx__price">3 000 <small>₽</small></p>
+              </div>
+              <p class="fx__desc">Волоски собираются в тонкие сомкнутые пучки с просветами между ними — как у ресниц, которые только что высохли после дождя. Даёт лёгкий блеск на линии роста и не выглядит «нарисованным».</p>
+              <div class="scheme">
+                <svg class="diagram" viewBox="76 118 108 152" role="img" aria-label="Схема: два волоска, сомкнутых в тонкий пучок" focusable="false"><path d="M84 262 Q 130 250 176 262" fill="none" stroke="currentColor" stroke-opacity=".2" stroke-width="1.6" stroke-linecap="round"/><path class="dg-nat" d="M132.14 256.52L128.56 251.28L125.30 246.04L122.36 240.82L119.74 235.61L117.45 230.42L115.48 225.23L113.82 220.05L112.49 214.88L111.48 209.71L110.78 204.54L110.41 199.37L110.35 194.20L110.62 189.02L111.21 183.84L112.11 178.65L113.34 173.44L114.87 168.21L116.64 162.93L116.64 162.93L114.26 167.99L112.32 173.13L110.72 178.31L109.47 183.54L108.57 188.79L108.00 194.09L107.77 199.41L107.89 204.77L108.35 210.15L109.15 215.55L110.30 220.98L111.78 226.43L113.61 231.90L115.78 237.39L118.29 242.89L121.14 248.41L124.33 253.93L127.86 259.48Z"/><path class="dg-ext" style="--i:0;--rot:4.5deg;transform-origin:130px 258px" d="M132.62 256.76L129.02 249.12L125.77 241.54L122.86 234.01L120.28 226.53L118.05 219.10L116.15 211.72L114.60 204.39L113.38 197.10L112.50 189.86L111.96 182.67L111.76 175.51L111.90 168.40L112.37 161.32L113.18 154.29L114.33 147.28L115.81 140.31L117.61 133.37L119.64 126.41L119.64 126.41L116.92 133.14L114.66 140.00L112.77 146.95L111.24 153.97L110.08 161.06L109.27 168.23L108.82 175.46L108.73 182.77L108.99 190.14L109.61 197.58L110.59 205.07L111.92 212.64L113.61 220.26L115.65 227.94L118.05 235.68L120.81 243.48L123.92 251.33L127.38 259.24Z"/><path class="dg-ext" style="--i:1;--rot:-4.5deg;transform-origin:130px 258px" d="M132.78 257.18L130.43 249.08L128.40 241.08L126.70 233.19L125.32 225.40L124.28 217.71L123.56 210.12L123.17 202.64L123.11 195.25L123.38 187.96L123.97 180.77L124.89 173.67L126.13 166.67L127.71 159.76L129.61 152.93L131.84 146.20L134.39 139.54L137.26 132.96L140.36 126.41L140.36 126.41L136.61 132.64L133.30 139.06L130.35 145.62L127.75 152.31L125.49 159.14L123.57 166.09L121.99 173.17L120.76 180.37L119.86 187.69L119.31 195.13L119.10 202.69L119.24 210.37L119.71 218.16L120.53 226.07L121.69 234.09L123.19 242.22L125.03 250.46L127.22 258.82Z"/></svg>
+                <p><b>Два волоска, сомкнутых в стрелку</b>Пучки стоят реже, чем в объёмах, — отсюда просветы. <i>Серым</i> — своя ресница.</p>
+              </div>
+              <dl class="fx__meta">
+                <div><dt>Кому подойдёт</dt><dd>если хочется блеска, а не объёма</dd></div>
+                <div><dt>Держится</dt><dd>3–4 недели</dd></div>
+                <div><dt>Время</dt><dd>≈ 2 часа</dd></div>
+                <div><dt>Толщина волоска</dt><dd>0,07 мм</dd></div>
+              </dl>
+              <div class="fx__act">
+                <a class="btn btn--primary js-book" href="#" data-msg="Здравствуйте! Хочу записаться на наращивание, эффект «Мокрый эффект».">Записаться на мокрый эффект</a>
+              </div>
+              <p class="fx__note">На очень светлых и тонких ресницах эффект почти не виден. Приходите в дневном свете — покажу, как он ляжет именно на вас.</p>
+            </div>
+          </div>
+
+          <div class="fx" role="tabpanel" id="p-d15" aria-labelledby="tab-d15" tabindex="0" hidden>
+            <div class="fx__media">
+              <img src="assets/img/effect-15d.webp" width="1200" height="1500" alt="Результат: 1,5d" loading="lazy" decoding="async">
+            </div>
+            <div class="fx__body">
+              <div class="fx__head">
+                <h3>1,5D</h3>
+                <p class="fx__price">2 900 <small>₽</small></p>
+              </div>
+              <p class="fx__desc">Чередование: на одну ресницу идёт один волосок, на соседнюю — веер из двух. Заполняет пробелы там, где свои ресницы растут неравномерно, но линия остаётся спокойной.</p>
+              <div class="scheme">
+                <svg class="diagram" viewBox="26 126 208 144" role="img" aria-label="Схема: чередование одного и двух волосков на соседних ресницах" focusable="false"><path d="M34 262 Q 80 250 126 262" fill="none" stroke="currentColor" stroke-opacity=".2" stroke-width="1.6" stroke-linecap="round"/><path class="dg-nat" d="M82.14 256.52L78.56 251.28L75.30 246.04L72.36 240.82L69.74 235.61L67.45 230.42L65.48 225.23L63.82 220.05L62.49 214.88L61.48 209.71L60.78 204.54L60.41 199.37L60.35 194.20L60.62 189.02L61.21 183.84L62.11 178.65L63.34 173.44L64.87 168.21L66.64 162.93L66.64 162.93L64.26 167.99L62.32 173.13L60.72 178.31L59.47 183.54L58.57 188.79L58.00 194.09L57.77 199.41L57.89 204.77L58.35 210.15L59.15 215.55L60.30 220.98L61.78 226.43L63.61 231.90L65.78 237.39L68.29 242.89L71.14 248.41L74.33 253.93L77.86 259.48Z"/><path class="dg-ext" style="--i:0;--rot:0.0deg;transform-origin:80px 258px" d="M82.71 256.97L79.90 249.56L77.41 242.22L75.23 234.97L73.36 227.78L71.81 220.66L70.57 213.62L69.65 206.65L69.04 199.74L68.74 192.90L68.76 186.13L69.09 179.41L69.73 172.77L70.68 166.18L71.95 159.65L73.53 153.17L75.42 146.75L77.60 140.38L80.00 134.00L80.00 134.00L76.93 140.10L74.29 146.35L72.00 152.72L70.05 159.18L68.42 165.74L67.13 172.39L66.16 179.14L65.53 185.97L65.22 192.90L65.24 199.91L65.60 207.02L66.28 214.20L67.29 221.47L68.64 228.82L70.31 236.26L72.31 243.77L74.63 251.36L77.29 259.03Z"/><path d="M134 262 Q 180 250 226 262" fill="none" stroke="currentColor" stroke-opacity=".2" stroke-width="1.6" stroke-linecap="round"/><path class="dg-nat" d="M182.14 256.52L178.56 251.28L175.30 246.04L172.36 240.82L169.74 235.61L167.45 230.42L165.48 225.23L163.82 220.05L162.49 214.88L161.48 209.71L160.78 204.54L160.41 199.37L160.35 194.20L160.62 189.02L161.21 183.84L162.11 178.65L163.34 173.44L164.87 168.21L166.64 162.93L166.64 162.93L164.26 167.99L162.32 173.13L160.72 178.31L159.47 183.54L158.57 188.79L158.00 194.09L157.77 199.41L157.89 204.77L158.35 210.15L159.15 215.55L160.30 220.98L161.78 226.43L163.61 231.90L165.78 237.39L168.29 242.89L171.14 248.41L174.33 253.93L177.86 259.48Z"/><path class="dg-ext" style="--i:1;--rot:15.0deg;transform-origin:180px 258px" d="M182.35 256.30L177.72 249.87L173.41 243.43L169.43 236.99L165.77 230.53L162.43 224.06L159.41 217.57L156.71 211.07L154.33 204.56L152.28 198.03L150.54 191.48L149.12 184.92L148.02 178.33L147.24 171.72L146.77 165.08L146.62 158.42L146.78 151.73L147.24 145.00L147.91 138.23L147.91 138.23L146.52 144.91L145.59 151.64L145.02 158.37L144.81 165.12L144.93 171.88L145.41 178.64L146.22 185.40L147.38 192.17L148.87 198.94L150.71 205.71L152.89 212.48L155.41 219.25L158.27 226.00L161.47 232.76L165.01 239.51L168.89 246.25L173.10 252.98L177.65 259.70Z"/><path class="dg-ext" style="--i:2;--rot:-15.0deg;transform-origin:180px 258px" d="M182.88 257.70L182.09 249.82L181.58 242.09L181.35 234.51L181.41 227.09L181.75 219.82L182.38 212.69L183.29 205.72L184.49 198.89L185.97 192.20L187.74 185.66L189.80 179.27L192.14 173.01L194.77 166.90L197.68 160.92L200.88 155.07L204.37 149.36L208.13 143.76L212.09 138.23L212.09 138.23L207.55 143.32L203.38 148.68L199.52 154.23L195.96 159.97L192.69 165.88L189.72 171.97L187.04 178.24L184.66 184.68L182.57 191.29L180.78 198.07L179.28 205.03L178.08 212.14L177.18 219.43L176.57 226.88L176.26 234.49L176.25 242.26L176.54 250.20L177.12 258.30Z"/></svg>
+                <p><b>Чередование 1 и 2 волосков</b>Самый частый выбор, когда «классики мало, а 2D много». <i>Серым</i> — своя ресница.</p>
+              </div>
+              <dl class="fx__meta">
+                <div><dt>Кому подойдёт</dt><dd>при неравномерном росте</dd></div>
+                <div><dt>Держится</dt><dd>3–4 недели</dd></div>
+                <div><dt>Время</dt><dd>≈ 2,5 часа</dd></div>
+                <div><dt>Толщина волоска</dt><dd>0,07 мм</dd></div>
+              </dl>
+              <div class="fx__act">
+                <a class="btn btn--primary js-book" href="#" data-msg="Здравствуйте! Хочу записаться на наращивание, эффект «1,5D».">Записаться на 1,5D</a>
+              </div>
+              <p class="fx__note">Вес почти как у классики, поэтому подходит тем, у кого от объёмов раньше «тяжелели» глаза.</p>
+            </div>
+          </div>
+
+          <div class="fx" role="tabpanel" id="p-d2" aria-labelledby="tab-d2" tabindex="0" hidden>
+            <div class="fx__media">
+              <img src="assets/img/effect-2d.webp" width="1200" height="1500" alt="Результат: 2d" loading="lazy" decoding="async">
+            </div>
+            <div class="fx__body">
+              <div class="fx__head">
+                <h3>2D</h3>
+                <p class="fx__price">3 300 <small>₽</small></p>
+              </div>
+              <p class="fx__desc">Два тонких волоска раскрываются веером на каждой реснице. Линия роста становится заметно плотнее, но за счёт толщины 0,07 мм вес остаётся тем же, что у классики.</p>
+              <div class="scheme">
+                <svg class="diagram" viewBox="76 124 108 146" role="img" aria-label="Схема: два волоска в веере на одной натуральной реснице" focusable="false"><path d="M84 262 Q 130 250 176 262" fill="none" stroke="currentColor" stroke-opacity=".2" stroke-width="1.6" stroke-linecap="round"/><path class="dg-nat" d="M132.14 256.52L128.56 251.28L125.30 246.04L122.36 240.82L119.74 235.61L117.45 230.42L115.48 225.23L113.82 220.05L112.49 214.88L111.48 209.71L110.78 204.54L110.41 199.37L110.35 194.20L110.62 189.02L111.21 183.84L112.11 178.65L113.34 173.44L114.87 168.21L116.64 162.93L116.64 162.93L114.26 167.99L112.32 173.13L110.72 178.31L109.47 183.54L108.57 188.79L108.00 194.09L107.77 199.41L107.89 204.77L108.35 210.15L109.15 215.55L110.30 220.98L111.78 226.43L113.61 231.90L115.78 237.39L118.29 242.89L121.14 248.41L124.33 253.93L127.86 259.48Z"/><path class="dg-ext" style="--i:0;--rot:17.0deg;transform-origin:130px 258px" d="M132.29 256.22L127.13 249.54L122.31 242.84L117.83 236.12L113.70 229.38L109.91 222.61L106.46 215.81L103.36 208.99L100.59 202.14L98.17 195.27L96.08 188.36L94.34 181.42L92.93 174.44L91.86 167.43L91.13 160.39L90.74 153.30L90.67 146.17L90.93 139.00L91.41 131.77L91.41 131.77L90.21 138.94L89.48 146.12L89.14 153.31L89.17 160.49L89.57 167.67L90.33 174.84L91.46 182.00L92.95 189.16L94.80 196.30L97.02 203.42L99.59 210.53L102.53 217.62L105.83 224.70L109.49 231.76L113.50 238.80L117.88 245.81L122.62 252.81L127.71 259.78Z"/><path class="dg-ext" style="--i:1;--rot:-17.0deg;transform-origin:130px 258px" d="M132.89 257.80L132.35 249.38L132.10 241.13L132.15 233.06L132.49 225.16L133.14 217.43L134.08 209.86L135.32 202.47L136.85 195.25L138.69 188.19L140.83 181.30L143.26 174.57L145.99 168.00L149.03 161.59L152.36 155.34L156.00 149.24L159.93 143.30L164.15 137.50L168.59 131.77L168.59 131.77L163.59 137.04L158.97 142.59L154.67 148.36L150.68 154.33L146.99 160.51L143.62 166.88L140.54 173.44L137.78 180.21L135.32 187.16L133.17 194.31L131.33 201.64L129.80 209.17L128.58 216.88L127.67 224.77L127.06 232.86L126.77 241.12L126.78 249.57L127.11 258.20Z"/></svg>
+                <p><b>Два волоска веером</b>Каждый тоньше классического, поэтому нагрузка та же. <i>Серым</i> — своя ресница.</p>
+              </div>
+              <dl class="fx__meta">
+                <div><dt>Кому подойдёт</dt><dd>для заметного, но не тяжёлого объёма</dd></div>
+                <div><dt>Держится</dt><dd>3–4 недели</dd></div>
+                <div><dt>Время</dt><dd>≈ 2,5 часа</dd></div>
+                <div><dt>Толщина волоска</dt><dd>0,07 мм</dd></div>
+              </dl>
+              <div class="fx__act">
+                <a class="btn btn--primary js-book" href="#" data-msg="Здравствуйте! Хочу записаться на наращивание, эффект «2D».">Записаться на 2D</a>
+              </div>
+              <p class="fx__note">Самый частый запрос перед отпуском и съёмкой: держит форму на фото и не требует туши.</p>
+            </div>
+          </div>
+
+          <div class="fx" role="tabpanel" id="p-d3" aria-labelledby="tab-d3" tabindex="0" hidden>
+            <div class="fx__media">
+              <img src="assets/img/effect-3d.webp" width="1200" height="1500" alt="Результат: 3d" loading="lazy" decoding="async">
+            </div>
+            <div class="fx__body">
+              <div class="fx__head">
+                <h3>3D</h3>
+                <p class="fx__price">3 700 <small>₽</small></p>
+              </div>
+              <p class="fx__desc">Три волоска в веере, толщина 0,05 мм. Даёт сплошную тёмную линию по краю века — эффект подводки без подводки. Самый требовательный к состоянию своих ресниц.</p>
+              <div class="scheme">
+                <svg class="diagram" viewBox="70 118 120 152" role="img" aria-label="Схема: три волоска в веере на одной натуральной реснице" focusable="false"><path d="M84 262 Q 130 250 176 262" fill="none" stroke="currentColor" stroke-opacity=".2" stroke-width="1.6" stroke-linecap="round"/><path class="dg-nat" d="M132.14 256.52L128.56 251.28L125.30 246.04L122.36 240.82L119.74 235.61L117.45 230.42L115.48 225.23L113.82 220.05L112.49 214.88L111.48 209.71L110.78 204.54L110.41 199.37L110.35 194.20L110.62 189.02L111.21 183.84L112.11 178.65L113.34 173.44L114.87 168.21L116.64 162.93L116.64 162.93L114.26 167.99L112.32 173.13L110.72 178.31L109.47 183.54L108.57 188.79L108.00 194.09L107.77 199.41L107.89 204.77L108.35 210.15L109.15 215.55L110.30 220.98L111.78 226.43L113.61 231.90L115.78 237.39L118.29 242.89L121.14 248.41L124.33 253.93L127.86 259.48Z"/><path class="dg-ext" style="--i:0;--rot:23.0deg;transform-origin:130px 258px" d="M132.09 255.99L126.26 249.89L120.76 243.73L115.61 237.51L110.80 231.24L106.32 224.90L102.18 218.51L98.38 212.05L94.92 205.52L91.78 198.94L88.99 192.28L86.53 185.56L84.40 178.77L82.61 171.91L81.14 164.98L80.01 157.98L79.20 150.90L78.70 143.74L78.42 136.49L78.42 136.49L77.98 143.75L78.01 150.97L78.42 158.15L79.20 165.29L80.35 172.39L81.86 179.44L83.73 186.45L85.96 193.41L88.54 200.31L91.49 207.17L94.80 213.97L98.46 220.72L102.48 227.41L106.86 234.05L111.59 240.63L116.67 247.15L122.12 253.61L127.91 260.01Z"/><path class="dg-ext" style="--i:1;--rot:0.0deg;transform-origin:130px 258px" d="M132.71 256.97L129.72 249.07L127.07 241.26L124.76 233.52L122.78 225.86L121.14 218.28L119.83 210.78L118.85 203.34L118.21 195.99L117.90 188.70L117.93 181.48L118.29 174.34L118.98 167.26L120.01 160.24L121.37 153.29L123.06 146.40L125.09 139.56L127.43 132.78L130.00 126.00L130.00 126.00L126.76 132.50L123.96 139.16L121.54 145.94L119.46 152.82L117.75 159.80L116.38 166.88L115.36 174.06L114.70 181.33L114.38 188.70L114.41 196.16L114.80 203.71L115.53 211.36L116.62 219.09L118.05 226.91L119.84 234.81L121.97 242.80L124.46 250.88L127.29 259.03Z"/><path class="dg-ext" style="--i:2;--rot:-23.0deg;transform-origin:130px 258px" d="M132.90 258.11L133.23 249.67L133.85 241.44L134.74 233.42L135.91 225.60L137.36 217.98L139.09 210.55L141.09 203.33L143.38 196.31L145.94 189.48L148.78 182.85L151.91 176.41L155.31 170.16L159.00 164.11L162.97 158.24L167.22 152.56L171.75 147.06L176.56 141.73L181.58 136.49L181.58 136.49L176.05 141.21L170.88 146.25L165.99 151.54L161.40 157.06L157.09 162.82L153.07 168.80L149.32 175.01L145.87 181.45L142.70 188.11L139.81 194.99L137.22 202.09L134.91 209.41L132.89 216.95L131.15 224.71L129.71 232.69L128.55 240.87L127.68 249.28L127.10 257.89Z"/></svg>
+                <p><b>Три волоска веером</b>Веер раскрываю руками под каждую ресницу отдельно. <i>Серым</i> — своя ресница.</p>
+              </div>
+              <dl class="fx__meta">
+                <div><dt>Кому подойдёт</dt><dd>если свои ресницы крепкие</dd></div>
+                <div><dt>Держится</dt><dd>3–4 недели</dd></div>
+                <div><dt>Время</dt><dd>≈ 3 часа</dd></div>
+                <div><dt>Толщина волоска</dt><dd>0,05 мм</dd></div>
+              </dl>
+              <div class="fx__act">
+                <a class="btn btn--primary js-book" href="#" data-msg="Здравствуйте! Хочу записаться на наращивание, эффект «3D».">Записаться на 3D</a>
+              </div>
+              <p class="fx__note">Берусь не всегда: если ресницы тонкие или ослаблены, вес веера стянет их и они начнут выпадать. Скажу об этом на осмотре, до начала работы.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= СВОБОДНЫЕ ОКНА ======================= -->
+<section class="wrap" aria-labelledby="h-okna">
+  <div class="slots reveal">
+    <img class="slots__bg" src="assets/img/slots-bg.webp" width="1600" height="900" alt="" aria-hidden="true" loading="lazy" decoding="async">
+    <div class="slots__in">
+      <div class="slots__grid">
+        <div>
+          <h2 id="h-okna">Свободные окна</h2>
+          <p>Расписание веду вручную и обновляю утром. Если нужного времени нет — всё равно напишите: места освобождаются за день‑два, и я поставлю вас первой в лист ожидания.</p>
+          <!-- Демо-слоты: даты подставляются скриптом от сегодняшнего дня.
+               Реальное расписание проставляется здесь руками. -->
+          <ul class="chips" id="slots">
+            <li class="chip" data-day="1"><b>11:00</b><span>завтра</span></li>
+            <li class="chip" data-day="1"><b>15:30</b><span>завтра</span></li>
+            <li class="chip" data-day="3"><b>10:00</b><span>через 3 дня</span></li>
+            <li class="chip" data-day="4"><b>18:00</b><span>через 4 дня</span></li>
+          </ul>
+        </div>
+        <a class="btn btn--primary js-book" href="#">Занять время</a>
+      </div>
+      <p class="slots__cut">Запись подтверждаю в переписке. Предоплату не беру — просто предупредите, если планы изменились.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= ПОРТФОЛИО ======================= -->
+<section class="band" id="raboty" aria-labelledby="h-raboty">
+  <div class="wrap">
+    <div class="spine">
+      <p class="spine__label">Работы</p>
+      <div>
+        <div class="rail-head reveal">
+          <div>
+            <h2 id="h-raboty">Снято сразу после работы, без обработки</h2>
+            <p class="muted" style="margin-top:.6rem">Подпись — эффект, изгиб и длина, чтобы можно было показать мне похожее.</p>
+          </div>
+          <div class="rail-ctrl" data-rail-ctrl="works">
+            <button class="rail-btn" data-dir="-1" aria-label="Предыдущие работы"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="rail-btn" data-dir="1" aria-label="Следующие работы"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="rail" id="works" tabindex="0" role="group" aria-label="Лента работ, прокручивается по горизонтали">
+      
+      <figure class="work">
+        <div class="work__frame">
+          <img src="assets/img/work-01.webp" width="1000" height="1250" alt="Работа: 2D, изгиб M, 11 мм" loading="lazy" decoding="async">
+        </div>
+        <figcaption class="work__cap"><b>2D</b><span>изгиб M · 11 мм</span></figcaption>
+      </figure>
+      <figure class="work">
+        <div class="work__frame">
+          <img src="assets/img/work-02.webp" width="1000" height="1250" alt="Работа: Классика, изгиб C, 10 мм" loading="lazy" decoding="async">
+        </div>
+        <figcaption class="work__cap"><b>Классика</b><span>изгиб C · 10 мм</span></figcaption>
+      </figure>
+      <figure class="work">
+        <div class="work__frame">
+          <video data-auto muted loop playsinline preload="none" poster="assets/img/video-01-poster.webp" width="720" height="1280" aria-label="Видео работы: 3D, изгиб D, 12 мм">
+            <source src="assets/video/work-01.mp4" type="video/mp4">
+          </video>
+          <button class="vid-btn" data-paused="true" aria-label="Пауза или воспроизведение видео">
+            <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8zM13 5h3v14h-3z"/></svg>
+            <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg>
+          </button>
+        </div>
+        <figcaption class="work__cap"><b>3D</b><span>изгиб D · 12 мм · видео</span></figcaption>
+      </figure>
+      <figure class="work work--wide">
+        <div class="work__frame">
+          <img src="assets/img/work-03.webp" width="1400" height="933" alt="Работа: 3D, изгиб D, 12 мм" loading="lazy" decoding="async">
+        </div>
+        <figcaption class="work__cap"><b>3D</b><span>изгиб D · 12 мм</span></figcaption>
+      </figure>
+      <figure class="work">
+        <div class="work__frame">
+          <img src="assets/img/work-04.webp" width="1000" height="1250" alt="Работа: Мокрый, изгиб M, 11 мм" loading="lazy" decoding="async">
+        </div>
+        <figcaption class="work__cap"><b>Мокрый</b><span>изгиб M · 11 мм</span></figcaption>
+      </figure>
+      <figure class="work">
+        <div class="work__frame">
+          <img src="assets/img/work-05.webp" width="1000" height="1250" alt="Работа: 1,5D, изгиб C, 10 мм" loading="lazy" decoding="async">
+        </div>
+        <figcaption class="work__cap"><b>1,5D</b><span>изгиб C · 10 мм</span></figcaption>
+      </figure>
+      <figure class="work work--wide">
+        <div class="work__frame">
+          <img src="assets/img/work-06.webp" width="1400" height="933" alt="Работа: 2D, изгиб L, 12 мм" loading="lazy" decoding="async">
+        </div>
+        <figcaption class="work__cap"><b>2D</b><span>изгиб L · 12 мм</span></figcaption>
+      </figure>
+      <figure class="work">
+        <div class="work__frame">
+          <video data-auto muted loop playsinline preload="none" poster="assets/img/video-02-poster.webp" width="720" height="1280" aria-label="Видео работы: 2D, изгиб M, 11 мм">
+            <source src="assets/video/work-02.mp4" type="video/mp4">
+          </video>
+          <button class="vid-btn" data-paused="true" aria-label="Пауза или воспроизведение видео">
+            <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8zM13 5h3v14h-3z"/></svg>
+            <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg>
+          </button>
+        </div>
+        <figcaption class="work__cap"><b>2D</b><span>изгиб M · 11 мм · видео</span></figcaption>
+      </figure>
+      <figure class="work">
+        <div class="work__frame">
+          <img src="assets/img/work-07.webp" width="1000" height="1250" alt="Работа: Классика, изгиб M, 9 мм" loading="lazy" decoding="async">
+        </div>
+        <figcaption class="work__cap"><b>Классика</b><span>изгиб M · 9 мм</span></figcaption>
+      </figure>
+      <figure class="work">
+        <div class="work__frame">
+          <img src="assets/img/work-08.webp" width="1000" height="1250" alt="Работа: 3D, изгиб CC, 13 мм" loading="lazy" decoding="async">
+        </div>
+        <figcaption class="work__cap"><b>3D</b><span>изгиб CC · 13 мм</span></figcaption>
+      </figure>
+      <figure class="work work--wide">
+        <div class="work__frame">
+          <img src="assets/img/work-09.webp" width="1400" height="933" alt="Работа: Мокрый, изгиб C, 10 мм" loading="lazy" decoding="async">
+        </div>
+        <figcaption class="work__cap"><b>Мокрый</b><span>изгиб C · 10 мм</span></figcaption>
+      </figure>
+      <figure class="work">
+        <div class="work__frame">
+          <img src="assets/img/work-10.webp" width="1000" height="1250" alt="Работа: 1,5D, изгиб M, 11 мм" loading="lazy" decoding="async">
+        </div>
+        <figcaption class="work__cap"><b>1,5D</b><span>изгиб M · 11 мм</span></figcaption>
+      </figure>
+      <figure class="work">
+        <div class="work__frame">
+          <video data-auto muted loop playsinline preload="none" poster="assets/img/video-03-poster.webp" width="720" height="1280" aria-label="Видео работы: Мокрый, изгиб C, 10 мм">
+            <source src="assets/video/work-03.mp4" type="video/mp4">
+          </video>
+          <button class="vid-btn" data-paused="true" aria-label="Пауза или воспроизведение видео">
+            <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8zM13 5h3v14h-3z"/></svg>
+            <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l11 7-11 7z"/></svg>
+          </button>
+        </div>
+        <figcaption class="work__cap"><b>Мокрый</b><span>изгиб C · 10 мм · видео</span></figcaption>
+      </figure>
+      <figure class="work">
+        <div class="work__frame">
+          <img src="assets/img/work-11.webp" width="1000" height="1250" alt="Работа: 2D, изгиб D, 12 мм" loading="lazy" decoding="async">
+        </div>
+        <figcaption class="work__cap"><b>2D</b><span>изгиб D · 12 мм</span></figcaption>
+      </figure>
+      <figure class="work work--wide">
+        <div class="work__frame">
+          <img src="assets/img/work-12.webp" width="1400" height="933" alt="Работа: Классика, изгиб L, 11 мм" loading="lazy" decoding="async">
+        </div>
+        <figcaption class="work__cap"><b>Классика</b><span>изгиб L · 11 мм</span></figcaption>
+      </figure>
+      <figure class="work">
+        <div class="work__frame">
+          <img src="assets/img/work-13.webp" width="1000" height="1250" alt="Работа: 3D, изгиб M, 12 мм" loading="lazy" decoding="async">
+        </div>
+        <figcaption class="work__cap"><b>3D</b><span>изгиб M · 12 мм</span></figcaption>
+      </figure>
+    </div>
+    <div class="rail-bar" aria-hidden="true"><i data-bar="works"></i></div>
+  </div>
+</section>
+
+<!-- ======================= КАК ПРОХОДИТ ======================= -->
+<section class="band band--tint" aria-labelledby="h-kak">
+  <div class="wrap">
+    <div class="spine">
+      <p class="spine__label">Как проходит</p>
+      <div>
+        <h2 id="h-kak" class="reveal">Четыре шага, из которых вы участвуете только в первом</h2>
+        <div class="steps mt-6">
+
+          <article class="step reveal" style="--d:0ms">
+            <div class="step__t"><span class="step__n">1</span><span class="step__d">10 мин</span></div>
+            <h3>Смотрю ресницы</h3>
+            <p>Считаю, сколько своих и в каком они состоянии. Подбираем длину и изгиб — обычно на пару миллиметров короче, чем хочется на словах.</p>
+          </article>
+
+          <article class="step reveal" style="--d:80ms">
+            <div class="step__t"><span class="step__n">2</span><span class="step__d">15 мин</span></div>
+            <h3>Готовлю к работе</h3>
+            <p>Обезжириваю, кладу патчи под нижние ресницы, заклеиваю их. Дальше глаза закрыты до конца — линзы лучше снять заранее.</p>
+          </article>
+
+          <article class="step reveal" style="--d:160ms">
+            <div class="step__t"><span class="step__n">3</span><span class="step__d">1,5–2,5 ч</span></div>
+            <h3>Наращиваю</h3>
+            <p>Можно спать, слушать своё в наушниках или разговаривать — мне не мешает. Если затекла шея, скажите: подушку переложу за десять секунд.</p>
+          </article>
+
+          <article class="step reveal" style="--d:240ms">
+            <div class="step__t"><span class="step__n">4</span><span class="step__d">10 мин</span></div>
+            <h3>Проверяем вместе</h3>
+            <p>Прочёсываю щёточкой, ищу склейки и досаживаю пропуски. Смотрите в зеркало при мне — переделать проще сейчас, чем через неделю.</p>
+          </article>
+
+        </div>
+        <p class="steps__total">Классика занимает около двух часов, 3D — ближе к трём. Ставлю запись с запасом, поэтому следующего человека за дверью не будет.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= ОТЗЫВЫ ======================= -->
+<section class="band" id="otzyvy" aria-labelledby="h-otzyvy">
+  <div class="wrap">
+    <div class="spine">
+      <p class="spine__label">Отзывы</p>
+      <div>
+        <div class="rail-head reveal">
+          <div>
+            <h2 id="h-otzyvy">4,9 из 5 по 38 отзывам</h2>
+            <p class="muted" style="margin-top:.6rem">Публикую все, включая те, после которых пришлось переделывать.</p>
+          </div>
+          <div class="rail-ctrl" data-rail-ctrl="rvs">
+            <button class="rail-btn" data-dir="-1" aria-label="Предыдущие отзывы"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <button class="rail-btn" data-dir="1" aria-label="Следующие отзывы"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="rail" id="rvs" tabindex="0" role="group" aria-label="Лента отзывов, прокручивается по горизонтали">
+      
+      <article class="rv" data-who="Аня К." data-meta="2D · вторая коррекция" data-stars="5" data-full="Пришла после другого мастера, где мне склеили ресницы так, что они выпадали пучками. Марина сначала полчаса снимала чужую работу и показала, что осталось — зрелище было грустное.
+Сказала честно: сейчас наращивать нельзя, дайте отдохнуть месяц, вот масло, вот как расчёсывать. Другая бы просто взяла деньги.
+Через месяц сделали 2D, и это первый раз, когда у меня ничего не чешется и не тянет. Хожу третий месяц, коррекция раз в четыре недели.">
+        <div class="stars"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><span class="sr">Оценка 5 из 5</span></div>
+        <p class="rv__q">Пришла после другого мастера, где мне склеили ресницы так, что они выпадали пучками. Марина сначала полчаса снимала чужую работу и показала, что осталось — зрелище было грустное. Сказала честно: сейчас наращивать нельзя, дайте отдохнуть месяц, вот масло, вот как расчёсывать. Другая бы просто взяла деньги. Через месяц сделали 2D, и это первый раз, когда у меня ничего не чешется и не тянет. Хожу третий месяц, коррекция раз в четыре недели.</p>
+        <button class="rv__more" type="button">Читать полностью</button>
+        <div class="rv__f">
+          <span class="rv__av" aria-hidden="true">А</span>
+          <span><span class="rv__who">Аня К.</span><span class="rv__meta">2D · вторая коррекция</span></span>
+        </div>
+      </article>
+
+      <article class="rv" data-who="Даша" data-meta="Классика" data-stars="5" data-full="Хотела 3D, как у блогеров. Мне спокойно объяснили, что на моих ресницах это продержится две недели и потом выпадет со своими. Сделали классику — и я не жалею, выглядит как мои, только видно.
+Отдельно про кабинет: тихо, никто не ходит мимо, можно спать. Я и уснула.">
+        <div class="stars"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><span class="sr">Оценка 5 из 5</span></div>
+        <p class="rv__q">Хотела 3D, как у блогеров. Мне спокойно объяснили, что на моих ресницах это продержится две недели и потом выпадет со своими. Сделали классику — и я не жалею, выглядит как мои, только видно. Отдельно про кабинет: тихо, никто не ходит мимо, можно спать. Я и уснула.</p>
+        <button class="rv__more" type="button">Читать полностью</button>
+        <div class="rv__f">
+          <span class="rv__av" aria-hidden="true">Д</span>
+          <span><span class="rv__who">Даша</span><span class="rv__meta">Классика</span></span>
+        </div>
+      </article>
+
+      <article class="rv" data-who="Ольга М." data-meta="1,5D · постоянный клиент" data-stars="5" data-full="Хожу второй год. Ресницы растут неровно после наращивания в юности, и 1,5D — единственное, что это прячет. Марина помнит, какая длина где стоит, и не надо каждый раз объяснять заново.
+Единственное: записываться надо заранее, за неделю-полторы. Свободных окон почти не бывает, и это, наверное, всё объясняет.">
+        <div class="stars"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><span class="sr">Оценка 5 из 5</span></div>
+        <p class="rv__q">Хожу второй год. Ресницы растут неровно после наращивания в юности, и 1,5D — единственное, что это прячет. Марина помнит, какая длина где стоит, и не надо каждый раз объяснять заново. Единственное: записываться надо заранее, за неделю-полторы. Свободных окон почти не бывает, и это, наверное, всё объясняет.</p>
+        <button class="rv__more" type="button">Читать полностью</button>
+        <div class="rv__f">
+          <span class="rv__av" aria-hidden="true">О</span>
+          <span><span class="rv__who">Ольга М.</span><span class="rv__meta">1,5D · постоянный клиент</span></span>
+        </div>
+      </article>
+
+      <article class="rv" data-who="Кристина" data-meta="Мокрый эффект" data-stars="5" data-full="Сделала мокрый перед отпуском. Две недели море, солнце, крем от загара — держалось всё.">
+        <div class="stars"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><span class="sr">Оценка 5 из 5</span></div>
+        <p class="rv__q">Сделала мокрый перед отпуском. Две недели море, солнце, крем от загара — держалось всё.</p>
+        <button class="rv__more" type="button">Читать полностью</button>
+        <div class="rv__f">
+          <span class="rv__av" aria-hidden="true">К</span>
+          <span><span class="rv__who">Кристина</span><span class="rv__meta">Мокрый эффект</span></span>
+        </div>
+      </article>
+
+      <article class="rv" data-who="Вера С." data-meta="3D" data-stars="4" data-full="Всё аккуратно, но три часа лежать мне тяжело — затекает спина. Предупредили заранее, я сама согласилась. В середине сделали перерыв, размялась, дальше нормально.
+Результат нравится, объём как хотела. Просто закладывайте, что это долго, и не планируйте ничего на вечер.">
+        <div class="stars"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><span class="sr">Оценка 4 из 5</span></div>
+        <p class="rv__q">Всё аккуратно, но три часа лежать мне тяжело — затекает спина. Предупредили заранее, я сама согласилась. В середине сделали перерыв, размялась, дальше нормально. Результат нравится, объём как хотела. Просто закладывайте, что это долго, и не планируйте ничего на вечер.</p>
+        <button class="rv__more" type="button">Читать полностью</button>
+        <div class="rv__f">
+          <span class="rv__av" aria-hidden="true">В</span>
+          <span><span class="rv__who">Вера С.</span><span class="rv__meta">3D</span></span>
+        </div>
+      </article>
+
+      <article class="rv" data-who="Лена" data-meta="2D · чувствительные глаза" data-stars="5" data-full="У меня от обычного клея текут глаза и краснеют веки — проверено у двух мастеров. Здесь взяли состав без паров, работали дольше, но я впервые вышла без красных глаз.
+Перед работой сделали тест на небольшом участке и попросили подождать сутки. Никто раньше так не делал.">
+        <div class="stars"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg><span class="sr">Оценка 5 из 5</span></div>
+        <p class="rv__q">У меня от обычного клея текут глаза и краснеют веки — проверено у двух мастеров. Здесь взяли состав без паров, работали дольше, но я впервые вышла без красных глаз. Перед работой сделали тест на небольшом участке и попросили подождать сутки. Никто раньше так не делал.</p>
+        <button class="rv__more" type="button">Читать полностью</button>
+        <div class="rv__f">
+          <span class="rv__av" aria-hidden="true">Л</span>
+          <span><span class="rv__who">Лена</span><span class="rv__meta">2D · чувствительные глаза</span></span>
+        </div>
+      </article>
+    </div>
+    <div class="rail-bar" aria-hidden="true"><i data-bar="rvs"></i></div>
+  </div>
+</section>
+
+<!-- ======================= ОБО МНЕ ======================= -->
+<section class="band band--tint" id="obo-mne" aria-labelledby="h-obo">
+  <div class="wrap">
+    <div class="about">
+      <div class="about__img reveal">
+        <img src="assets/img/about.webp" width="1200" height="1500" alt="Марина Соболева за работой" loading="lazy" decoding="async">
+      </div>
+      <div class="reveal" style="--d:80ms">
+        <p class="eyebrow">Обо мне</p>
+        <h2 id="h-obo">Марина Соболева</h2>
+        <p style="margin-top:1rem">Пришла в ресницы из графики: восемь лет рисовала шрифты и вывески, и рука уже была поставлена на мелкую работу. Оказалось, что это ровно тот же навык — видеть миллиметр и не дрожать.</p>
+        <p>Первый год работала на себя по вечерам, потом сняла кабинет. Сознательно не расширяюсь: мне важно помнить, у кого какие ресницы и что мы делали в прошлый раз, а с потоком это не работает.</p>
+        <p>Если вам не подходит то, что вы просите, — скажу и предложу другое. Отказываю примерно одной клиентке из двадцати: после ковида, на своих трёх ресничках или после неудачного ламинирования наращивать нельзя.</p>
+        <dl class="creds">
+          <div><dt>В профессии</dt><dd>с 2021 года</dd></div>
+          <div><dt>Базовый курс</dt><dd>Lash Room, Санкт‑Петербург</dd></div>
+          <div><dt>Объёмы и изгибы</dt><dd>повышение, 2023</dd></div>
+          <div><dt>Статус</dt><dd>самозанятая, чек после оплаты</dd></div>
+        </dl>
+        <p class="about__sign">Напишите, я отвечаю сама</p>
+        <div class="msg">
+          <a class="btn btn--primary js-book" href="#">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1012 2zm5.6 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.2-1-.4-1.8-.7-3.1-1.4-5.2-4.6-5.3-4.8-.2-.2-1.3-1.7-1.3-3.3 0-1.6.8-2.3 1.1-2.7.3-.3.6-.4.8-.4h.6c.2 0 .5-.1.7.5l.9 2.2c.1.2.1.4 0 .6l-.4.5-.4.4c-.1.1-.3.3-.1.6.1.3.7 1.2 1.5 1.9 1 .9 1.9 1.2 2.2 1.3.3.1.4.1.6-.1l.9-1c.2-.2.4-.2.6-.1l2.1 1c.3.1.5.2.5.3.1.2.1.7-.1 1.5z"/></svg>
+            WhatsApp
+          </a>
+          <a class="btn btn--ghost" href="https://t.me/sobol_lashes" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.9 4.3L18.7 19c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.3 12.7l-4.8-1.5c-1-.3-1.1-1 .2-1.5l18.8-7.2c.9-.3 1.6.2 1.4 1.8z"/></svg>
+            Telegram
+          </a>
+          <a class="btn btn--ghost" href="https://vk.com/sobol_lashes" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 18c-5.5 0-8.9-3.9-9-10.3h2.8c.1 4.8 2.3 6.8 3.9 7.2V7.7h2.6v4c1.6-.2 3.3-2 3.9-4h2.6c-.4 2.5-2.1 4.3-3.3 5 1.2.6 3.1 2.2 3.8 5.3h-2.9c-.6-1.8-2.1-3.2-4.1-3.5V18z"/></svg>
+            ВКонтакте
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= ГДЕ НАХОДИМСЯ ======================= -->
+<section class="band" id="kontakty" aria-labelledby="h-gde">
+  <div class="wrap">
+    <div class="spine">
+      <p class="spine__label">Где</p>
+      <div class="place">
+        <div class="place__img reveal">
+          <img src="assets/img/studio-01.webp" width="1600" height="1067" alt="Рабочее место в студии: кушетка, лампа и инструменты" loading="lazy" decoding="async">
+        </div>
+        <div class="reveal" style="--d:80ms">
+          <h2 id="h-gde" style="margin-bottom:1rem">Отдельный кабинет, без общего зала</h2>
+          <p class="place__addr">Санкт‑Петербург,<br>ул. Достоевского, 12</p>
+          <dl>
+            <div><dt>Ориентир</dt><dd>м. Достоевская, 6 минут</dd></div>
+            <div><dt>Вход</dt><dd>со двора, домофон 12К</dd></div>
+            <div><dt>Этаж</dt><dd>2‑й, без лифта</dd></div>
+            <div><dt>Парковка</dt><dd>во дворе, обычно есть места</dd></div>
+            <div><dt>Часы</dt><dd>пн–сб, 10:00–20:00</dd></div>
+          </dl>
+          <p style="margin-top:1.5rem"><a class="link-u" href="https://yandex.ru/maps/?text=Санкт-Петербург%2C%20улица%20Достоевского%2C%2012" target="_blank" rel="noopener">Открыть в Яндекс Картах</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= ВОПРОСЫ ======================= -->
+<section class="band band--tint" aria-labelledby="h-faq">
+  <div class="wrap">
+    <div class="spine">
+      <p class="spine__label">Вопросы</p>
+      <div>
+        <h2 id="h-faq" class="reveal">Что спрашивают до записи</h2>
+        <div class="faq mt-6">
+          
+          <details open>
+            <summary>Это больно?<span class="faq__ico" aria-hidden="true"></span></summary>
+            <div class="faq__body"><div><p>Нет. Вы лежите с закрытыми глазами, кожи ничего не касается: волосок крепится к реснице в миллиметре от века. Неприятно бывает от другого — от того, что три часа надо лежать неподвижно. Поэтому кладу валик под шею и делаю перерыв, если попросите.</p></div></div>
+          </details>
+
+          <details>
+            <summary>Сколько держится и когда идти на коррекцию?<span class="faq__ico" aria-hidden="true"></span></summary>
+            <div class="faq__body"><div><p>Три-четыре недели. Ресницы обновляются постоянно: своя ресница выпадает вместе с наращённым волоском, и это нормально — в день теряется 2–5 штук. Коррекция нужна, когда на месте осталось примерно половина. Если тянуть дольше двух месяцев, это уже не коррекция, а новое наращивание по цене полного объёма.</p></div></div>
+          </details>
+
+          <details>
+            <summary>Можно ли краситься и умываться?<span class="faq__ico" aria-hidden="true"></span></summary>
+            <div class="faq__body"><div><p>Умываться можно уже на вторые сутки, пенкой без масел. Тушь не нужна — она забивается между волосками, а смывать её придётся трением, от которого всё и отваливается. Тени, карандаш и тональный — без ограничений, только снимайте их не маслом, а мицеллярной водой без масел.</p></div></div>
+          </details>
+
+          <details>
+            <summary>У меня чувствительные глаза и бывает аллергия. Что делать?<span class="faq__ico" aria-hidden="true"></span></summary>
+            <div class="faq__body"><div><p>Скажите об этом при записи. У меня есть клей без выраженных паров — с ним работа идёт медленнее, но глаза не слезятся. Если аллергия уже была, сделаем тест: поставлю 10–15 волосков и попрошу подождать сутки. Тест бесплатный.</p></div></div>
+          </details>
+
+          <details>
+            <summary>Свои ресницы короткие и редкие. Возьмётесь?<span class="faq__ico" aria-hidden="true"></span></summary>
+            <div class="faq__body"><div><p>Посмотрю и скажу честно. На коротких ресницах работает длина 8–10 мм — длиннее просто не удержится. На редких помогают объёмы: 2D и 3D закрывают просветы. А вот если ресниц осталось совсем мало после неудачного наращивания или болезни, сначала нужен перерыв на 1–2 месяца.</p></div></div>
+          </details>
+
+          <details>
+            <summary>А если мне не понравится?<span class="faq__ico" aria-hidden="true"></span></summary>
+            <div class="faq__body"><div><p>Скажите сразу в кресле, пока вы здесь: поправлю длину, изгиб или сниму часть веером пореже — это входит в стоимость. Если что-то разонравилось в первые три дня, приходите, доработаю бесплатно. Полное снятие по желанию — 500 ₽.</p></div></div>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= ПАМЯТКА ======================= -->
+<section class="band" aria-labelledby="h-pamyatka">
+  <div class="wrap">
+    <div class="spine">
+      <p class="spine__label">Памятка</p>
+      <div>
+        <h2 id="h-pamyatka" class="reveal" style="margin-bottom:1.5rem">Что делать после процедуры</h2>
+        <div class="fringe reveal" aria-hidden="true"></div>
+        <div class="care reveal">
+          <div>
+            <h3 class="care__h">Первые 24 часа</h3>
+            <ul>
+              <li>Не мочить: клей набирает прочность сутки.</li>
+              <li>Без бани, сауны и горячего душа на лицо.</li>
+              <li>Не тереть глаза и не спать лицом в подушку.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="care__h">Каждый день</h3>
+            <ul>
+              <li>Расчёсывать щёточкой утром, сухими ресницами.</li>
+              <li>Умываться пенкой без масел, промакивать полотенцем.</li>
+              <li>Спать на спине или на боку — не лицом вниз.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="care__h">Не нужно</h3>
+            <ul>
+              <li>Подкручивать щипцами — волосок ломается у основания.</li>
+              <li>Красить тушью для объёма и снимать её мицеллярной водой.</li>
+              <li>Снимать самой: вместе с искусственными уйдут свои.</li>
+            </ul>
+          </div>
+          <p class="care__note">Коррекция — через 3–4 недели, когда на месте остаётся примерно половина волосков. Если ждать дольше, коррекция превращается в наращивание с нуля и стоит как полный объём.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ======================= ПОДВАЛ ======================= -->
+<footer class="ftr on-dark">
+  <div class="wrap">
+    <div class="ftr__grid">
+      <div>
+        <h2>Записаться</h2>
+        <div class="ftr__contacts" style="margin-top:1.5rem">
+          <a class="link-u" href="tel:+79000000000">+7 900 000‑00‑00</a>
+          <span>Санкт‑Петербург, ул. Достоевского, 12</span>
+          <span>пн–сб, 10:00–20:00</span>
+        </div>
+        <div class="ftr__soc">
+          <a class="js-book" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 00-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1012 2zm5.6 14.2c-.2.7-1.4 1.3-2 1.4-.5.1-1.2.1-1.9-.1-.4-.2-1-.4-1.8-.7-3.1-1.4-5.2-4.6-5.3-4.8-.2-.2-1.3-1.7-1.3-3.3 0-1.6.8-2.3 1.1-2.7.3-.3.6-.4.8-.4h.6c.2 0 .5-.1.7.5l.9 2.2c.1.2.1.4 0 .6l-.4.5-.4.4c-.1.1-.3.3-.1.6.1.3.7 1.2 1.5 1.9 1 .9 1.9 1.2 2.2 1.3.3.1.4.1.6-.1l.9-1c.2-.2.4-.2.6-.1l2.1 1c.3.1.5.2.5.3.1.2.1.7-.1 1.5z"/></svg>WhatsApp</a>
+          <a href="https://t.me/sobol_lashes" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.9 4.3L18.7 19c-.2 1-.9 1.3-1.8.8l-4.9-3.6-2.4 2.3c-.3.3-.5.5-1 .5l.4-5 9.1-8.2c.4-.4-.1-.6-.6-.2L6.3 12.7l-4.8-1.5c-1-.3-1.1-1 .2-1.5l18.8-7.2c.9-.3 1.6.2 1.4 1.8z"/></svg>Telegram</a>
+          <a href="https://vk.com/sobol_lashes" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 18c-5.5 0-8.9-3.9-9-10.3h2.8c.1 4.8 2.3 6.8 3.9 7.2V7.7h2.6v4c1.6-.2 3.3-2 3.9-4h2.6c-.4 2.5-2.1 4.3-3.3 5 1.2.6 3.1 2.2 3.8 5.3h-2.9c-.6-1.8-2.1-3.2-4.1-3.5V18z"/></svg>ВКонтакте</a>
+        </div>
+      </div>
+      <div class="refer">
+        <b>Приведи подругу</b>
+        <p>Она приходит впервые и называет ваше имя — обе получаете по 500 ₽ на следующую запись. Складывается: три подруги — полторы тысячи. Сгорает через полгода.</p>
+      </div>
+    </div>
+    <div class="fringe" aria-hidden="true" style="opacity:.28;filter:invert(1);margin-top:3rem"></div>
+    <div class="ftr__fine">
+      <span>Демонстрационная версия: тексты, отзывы и контакты — заполнители</span>
+      <span>© <span id="yr">2026</span> СОБОЛЬ lash studio</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Нижняя панель записи — только на телефоне, появляется после первого экрана -->
+<div class="cta-bar" id="ctabar">
+  <div class="cta-bar__in">
+    <b>Свободно завтра<span>11:00 и 15:30</span></b>
+    <a class="btn btn--primary js-book" href="#">Записаться</a>
+  </div>
+</div>
+
+<dialog id="rv-dlg" aria-labelledby="rv-dlg-t">
+  <button class="dlg__x" id="rv-dlg-x" aria-label="Закрыть отзыв">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
+  </button>
+  <div class="dlg">
+    <div class="stars" id="rv-dlg-s" aria-hidden="true"></div>
+    <h2 id="rv-dlg-t" style="font-size:var(--d-3)"></h2>
+    <p class="muted" id="rv-dlg-m" style="font-size:var(--t-sm);margin-top:.25rem"></p>
+    <div id="rv-dlg-b" style="margin-top:1.5rem"></div>
+  </div>
+</dialog>
+
+<script>
+/* =========================================================================
+   СОБОЛЬ — скрипты страницы.
+   Ничего не требует сборки: чистый ES2020, работает из файла.
+   ========================================================================= */
+(function () {
+  'use strict';
+
+  var $  = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var motionOK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* --- 1. Контакт в одном месте -----------------------------------------
+     Номер и текст первого сообщения меняются здесь, а не в каждой кнопке. */
+  var PHONE = '79000000000';
+  var HELLO = 'Здравствуйте! Хочу записаться на наращивание ресниц.';
+  function waLink(text) {
+    return 'https://wa.me/' + PHONE + '?text=' + encodeURIComponent(text || HELLO);
+  }
+  $$('.js-book').forEach(function (a) {
+    a.href = waLink(a.dataset.msg);
+    a.target = '_blank';
+    a.rel = 'noopener';
+  });
+
+  /* --- 2. Шапка: уплотняется, как только страница ушла вверх ------------- */
+  var hdr = $('#hdr');
+  var onScroll = function () { hdr.classList.toggle('hdr--stuck', window.scrollY > 12); };
+  onScroll();
+  addEventListener('scroll', onScroll, { passive: true });
+
+  /* --- 3. Появление блоков при прокрутке --------------------------------- */
+  if (motionOK && 'IntersectionObserver' in window) {
+    var revIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('is-in');
+        revIO.unobserve(e.target);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    $$('.reveal').forEach(function (el) { revIO.observe(el); });
+  } else {
+    $$('.reveal').forEach(function (el) { el.classList.add('is-in'); });
+  }
+
+  /* --- 4. Каталог эффектов: вкладки по шаблону ARIA ----------------------- */
+  var fx = $('#fx');
+  if (fx) {
+    var tabs = $$('[role="tab"]', fx);
+    var panels = tabs.map(function (t) { return document.getElementById(t.getAttribute('aria-controls')); });
+
+    function select(i, focus) {
+      tabs.forEach(function (t, n) {
+        var on = n === i;
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+        panels[n].hidden = !on;
+      });
+      var p = panels[i];
+      if (motionOK) {
+        p.removeAttribute('data-anim');
+        void p.offsetWidth;            // перезапуск анимации веера
+        p.setAttribute('data-anim', 'splay');
+      }
+      if (focus) {
+        tabs[i].focus();
+        tabs[i].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+    }
+
+    tabs.forEach(function (t, i) {
+      t.addEventListener('click', function () { select(i, false); });
+      t.addEventListener('keydown', function (e) {
+        var last = tabs.length - 1, n = null;
+        if (e.key === 'ArrowRight') n = i === last ? 0 : i + 1;
+        else if (e.key === 'ArrowLeft') n = i === 0 ? last : i - 1;
+        else if (e.key === 'Home') n = 0;
+        else if (e.key === 'End') n = last;
+        if (n === null) return;
+        e.preventDefault();
+        select(n, true);
+      });
+    });
+    select(0, false);
+  }
+
+  /* --- 5. Ленты: палец, мышь, колесо, клавиши, кнопки --------------------- */
+  $$('.rail').forEach(function (rail) {
+    var bar = $('[data-bar="' + rail.id + '"]');
+    var ctrl = $('[data-rail-ctrl="' + rail.id + '"]');
+    var prev = ctrl && ctrl.querySelector('[data-dir="-1"]');
+    var next = ctrl && ctrl.querySelector('[data-dir="1"]');
+
+    function paint() {
+      var max = rail.scrollWidth - rail.clientWidth;
+      var p = max > 2 ? rail.scrollLeft / max : 0;
+      if (bar) {
+        var track = bar.parentElement.clientWidth;
+        var w = Math.max(28, track * (rail.clientWidth / rail.scrollWidth));
+        bar.style.width = w + 'px';
+        bar.style.translate = (track - w) * p + 'px';
+      }
+      if (prev) prev.disabled = rail.scrollLeft < 4;
+      if (next) next.disabled = rail.scrollLeft > max - 4;
+    }
+    paint();
+    rail.addEventListener('scroll', paint, { passive: true });
+    addEventListener('resize', paint);
+
+    if (ctrl) {
+      ctrl.addEventListener('click', function (e) {
+        var b = e.target.closest('[data-dir]');
+        if (!b) return;
+        var step = rail.clientWidth * 0.8;
+        rail.scrollBy({ left: step * Number(b.dataset.dir), behavior: motionOK ? 'smooth' : 'auto' });
+      });
+    }
+
+    // Перетаскивание мышью. Порог в 5 пикселей, чтобы обычный клик по
+    // карточке не превращался в случайный сдвиг ленты.
+    var down = false, moved = false, x0 = 0, left0 = 0;
+    rail.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'touch' || e.button !== 0) return;
+      down = true; moved = false; x0 = e.clientX; left0 = rail.scrollLeft;
+    });
+    rail.addEventListener('pointermove', function (e) {
+      if (!down) return;
+      var dx = e.clientX - x0;
+      if (!moved && Math.abs(dx) < 5) return;
+      if (!moved) { moved = true; rail.classList.add('is-drag'); rail.setPointerCapture(e.pointerId); }
+      rail.scrollLeft = left0 - dx;
+    });
+    function release() {
+      if (!down) return;
+      down = false;
+      rail.classList.remove('is-drag');
+      if (moved) setTimeout(function () { moved = false; }, 0);
+    }
+    rail.addEventListener('pointerup', release);
+    rail.addEventListener('pointercancel', release);
+    rail.addEventListener('click', function (e) { if (moved) { e.preventDefault(); e.stopPropagation(); } }, true);
+  });
+
+  /* --- 6. Видео в портфолио: играет, пока видно; пауза — по кнопке -------- */
+  var vids = $$('video[data-auto]');
+  if (vids.length) {
+    vids.forEach(function (v) {
+      var btn = v.parentElement.querySelector('.vid-btn');
+      v.paused_by_user = !motionOK;
+      function sync() { btn.dataset.paused = v.paused ? 'true' : 'false'; }
+      btn.addEventListener('click', function () {
+        if (v.paused) { v.paused_by_user = false; v.play().catch(function () {}); }
+        else { v.paused_by_user = true; v.pause(); }
+        sync();
+      });
+      v.addEventListener('play', sync);
+      v.addEventListener('pause', sync);
+      sync();
+    });
+    if ('IntersectionObserver' in window) {
+      var vIO = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          var v = e.target;
+          if (e.isIntersecting && !v.paused_by_user) v.play().catch(function () {});
+          else if (!e.isIntersecting) v.pause();
+        });
+      }, { threshold: 0.55 });
+      vids.forEach(function (v) { vIO.observe(v); });
+    }
+  }
+
+  /* --- 6a. «Читать полностью» нужно только там, где текст правда обрезан -- */
+  function trimButtons() {
+    $$('.rv').forEach(function (card) {
+      var q = $('.rv__q', card), more = $('.rv__more', card);
+      if (!q || !more) return;
+      more.hidden = q.scrollHeight - q.clientHeight < 4;
+    });
+  }
+  trimButtons();
+  addEventListener('resize', trimButtons);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(trimButtons);
+
+  /* --- 7. Отзыв целиком — в модальном окне ------------------------------- */
+  var dlg = $('#rv-dlg');
+  if (dlg) {
+    var STAR = '<svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.6l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.4l6.5-.9z"/></svg>';
+    $$('.rv__more').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var card = btn.closest('.rv');
+        $('#rv-dlg-t').textContent = card.dataset.who;
+        $('#rv-dlg-m').textContent = card.dataset.meta;
+        $('#rv-dlg-s').innerHTML = STAR.repeat(Number(card.dataset.stars || 5));
+        $('#rv-dlg-b').innerHTML = card.dataset.full
+          .split('\n')
+          .map(function (t) { return '<p>' + t + '</p>'; })
+          .join('');
+        dlg.showModal();
+      });
+    });
+    $('#rv-dlg-x').addEventListener('click', function () { dlg.close(); });
+    // Escape закрывает окно и там, где встроенное поведение <dialog> недоступно.
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && dlg.open) { e.preventDefault(); dlg.close(); }
+    });
+    dlg.addEventListener('click', function (e) {
+      // Клик по подложке, а не по содержимому окна.
+      var r = dlg.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) dlg.close();
+    });
+  }
+
+  /* --- 8. Вопросы: закрытие тоже должно быть плавным --------------------- */
+  $$('.faq details').forEach(function (d) {
+    var body = $('.faq__body', d);
+    $('summary', d).addEventListener('click', function (e) {
+      if (!motionOK) return;
+      if (!d.open) return;                       // открытие CSS делает сам
+      e.preventDefault();
+      body.classList.add('is-closing');
+      var done = function () {
+        body.classList.remove('is-closing');
+        d.open = false;
+        body.removeEventListener('transitionend', done);
+      };
+      body.addEventListener('transitionend', done);
+    });
+  });
+
+  /* --- 9. Свободные окна: подписи считаются от сегодняшнего дня ---------- */
+  var slots = $('#slots');
+  if (slots) {
+    var WD = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+    var MN = ['янв.', 'фев.', 'мар.', 'апр.', 'мая', 'июня', 'июля', 'авг.', 'сен.', 'окт.', 'нояб.', 'дек.'];
+    $$('.chip', slots).forEach(function (c) {
+      var off = Number(c.dataset.day);
+      var d = new Date();
+      d.setDate(d.getDate() + off);
+      c.querySelector('span').textContent = off === 1 ? 'завтра'
+        : off === 2 ? 'послезавтра'
+        : WD[d.getDay()] + ', ' + d.getDate() + ' ' + MN[d.getMonth()];
+    });
+    var first = $$('.chip', slots).slice(0, 2).map(function (c) { return c.querySelector('b').textContent; });
+    var barTxt = $('#ctabar b span');
+    if (barTxt && first.length === 2) barTxt.textContent = first.join(' и ') + ' завтра';
+  }
+
+  /* --- 10. Панель записи на телефоне: после первого экрана и до подвала -- */
+  var bar = $('#ctabar');
+  if (bar && 'IntersectionObserver' in window) {
+    var hero = $('#top'), ftr = $('.ftr');
+    var pastHero = false, atFooter = false;
+    var upd = function () { bar.classList.toggle('is-on', pastHero && !atFooter); };
+    new IntersectionObserver(function (e) { pastHero = !e[0].isIntersecting; upd(); },
+      { rootMargin: '-60% 0px 0px 0px' }).observe(hero);
+    new IntersectionObserver(function (e) { atFooter = e[0].isIntersecting; upd(); },
+      { rootMargin: '0px 0px -20% 0px' }).observe(ftr);
+  }
+
+  /* --- 11. Год в подвале -------------------------------------------------- */
+  var yr = $('#yr');
+  if (yr) yr.textContent = new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
